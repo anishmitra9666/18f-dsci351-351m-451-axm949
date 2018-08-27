@@ -1,0 +1,446 @@
+---
+title: "CWRU DSCI351-451: Week01a-p  "
+author: "Roger H. French"
+date: "August 28, 2018"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ \setcounter{section}{1}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{2}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2018
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+
+<!-- Or on a single line like this -->
+ 
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  - Readings: 
+     
+  - Homeworks
+    
+  - Data Science Projects: 
+     
+  - 451 SemProjects:  
+     
+  - Friday Comm. Hour
+     
+
+#### Syllabus
+
+![DSCI351-451 Syllabus](../2-class/figs/syllabus.png)
+
+<!-- Comment
+-->
+
+License: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+##### setup for r-code chunks
+
+```{r,echo=TRUE, message=TRUE}
+options("digits" = 5)
+options("digits.secs" = 3)
+ 
+```
+
+#### A Simple Overview of R
+
+We'll look in more detail, going forward
+
+##### Intro to some R: Data Types
+ 
+  - Primitives (numeric, integer, character, logical, factor)
+  - Data Frames
+  - Lists
+  - Tables
+  - Arrays
+  - Environments
+  - Others (functions, closures, promises..)
+ 
+##### Simple Types, and their class
+
+```{r,collapse=TRUE}
+x <- 1
+class(x)
+ 
+y <- "Hello World"
+class(y)
+ 
+z <- TRUE
+class(z)
+ 
+as.integer(z)
+```
+ 
+##### Simple Types - Vectors 
+ 
+The basic type unit in R is a vector
+ 
+```{r, collapse=TRUE} 
+x <- c(1,2,3)
+x
+x <- 1:3
+x[1]
+x[0]
+x[-1]
+```
+ 
+##### Generating Vectors
+ 
+R provides lots of convenience functions for data generation:
+ 
+```{r,collapse=TRUE}
+rep(0, 5)
+seq(1,10)
+seq(1,2,.1)
+seq(1,2,length.out = 6)
+```
+ 
+##### Indexing, c is concatenate
+
+  -to see the help on c: help(c)
+ 
+```{r,collapse=TRUE}
+x <- c(1, 3, 4, 10, 15, 20, 50, 1, 6)
+x > 10
+which(x > 10)
+x[x > 10]
+x[!x > 10]
+x[x <= 10]
+x[x > 10 & x < 30]
+```
+ 
+##### Functions, very easy to define {.smaller}
+
+Usually take code in scripts, make functions from them
+
+```{r, collapse=TRUE}
+square <- function(x) x^2
+square(2)
+ 
+pow <- function(x, p=2) x^p
+pow(10)
+pow(10,3)
+pow(p = 3,10)
+ 
+```
+ 
+Functions can be passed as data:
+ 
+```{r,collapse=TRUE}
+g <- function(x, f) f(x)
+g(10, square)
+ 
+h <- function(x,f,...) f(x,...)
+h(10, pow, 3)
+```
+ 
+##### R is Vectorized 
+ 
+Example - multiplying two vectors:
+ 
+```{r}
+mult <- function(x,y) {  
+  z <- numeric(length(x))
+  for (i in 1:length(x)) {
+    z[i] <- x[i] * y[i]
+    }
+  z
+  }
+ 
+mult(1:10,1:10)
+```
+ 
+##### R is Vectorized
+ 
+Multiplying two vectors 'the R way':
+ 
+```{r}
+1:10 * 1:10
+```
+ 
+NOTE: R recycles vectors of unequal length:
+
+```{r}
+1:10 * 1:2
+```
+ 
+##### NOTE: Random Number Generation
+ 
+R contains a huge number of 
+
+  - built-in random number generators 
+  - for various probability distributions
+ 
+```{r}
+# Normal variates, mean=0, sd=1
+rnorm(10)
+rnorm(10, mean = 100, sd = 5)
+```
+ 
+Many different distributions available (the <b>r*</b> functions)
+ 
+#### Data Frames
+ 
+##### Data Frames are fundamental
+ 
+Data frames are the fundamental structure  
+
+  - used in data analysis
+  - Similar to a database table in spirit
+  - (named columns, distinct types)
+ 
+```{r}
+d <- data.frame(x = 1:6, y = "AUDUSD", z = c("one","two"))
+d
+```
+ 
+##### Data Frames can be indexed
+ 
+Data frames can be indexed like a vector or matrix:
+ 
+```{r,collapse=TRUE}
+# First row
+d[1,]
+ 
+# First column
+d[,1]
+ 
+# First and third cols, first two rows
+d[1:2,c(1,3)]
+```
+ 
+ 
+##### Generate a Data Frame {.smaller}
+ 
+Let's generate some dummy data:
+
+  - Using data.frame
+
+```{r}
+ 
+generateData <- function(N) data.frame(time = Sys.time() + 1:N, 
+  sym = "AUDUSD", 
+  bid = rep(1.2345,N) + runif(min = -.0010,max = .0010,N),
+  ask = rep(1.2356,N) + runif(min = -.0010,max = .0010,N),
+  exch = sample(c("EBS","RTM","CNX"),N, replace = TRUE)) 
+ 
+prices <- generateData(50)
+head(prices, 5)
+```
+ 
+##### Data Frames
+ 
+We can add/remove columns on the fly:
+
+```{r}
+prices$spread <- prices$ask - prices$bid
+prices$mid <- (prices$bid + prices$ask) * 0.5
+head(prices)
+```
+ 
+##### Operations on Data Frames 
+ 
+Some basic operations on data frames:
+
+```{r,collapse=TRUE}
+names(prices)
+ 
+table(prices$exch)
+ 
+summary(prices$mid)
+```
+ 
+##### Operations across data frame dimensions {.smaller}
+ 
+Operations can be applied across different dimensions of a data frame:
+ 
+```{r,collapse=TRUE}
+sapply(prices,class)
+```
+ 
+
+##### These Operators Are Functions
+
+```{r}
+`(`
+(1 + 2)
+`(` <- function(x) 42
+(1 + 2)
+rm("(")
+```
+
+#### Examples in R
+ 
+##### Example: Median Absolute Deviation {.smaller}
+
+$MAD(x) = median\left(\left|Y_i - \hat{Y}\right|\right)$
+```{r}
+mad
+```
+  
+##### Example: Simulating Coin Tosses {.smaller}
+ 
+What is the probability of exactly 3 heads in 10 coin tosses for a fair coin?
+
+ 
+*Using binomial identity:*
+
+```{r}
+# $\binom{n}{k}p^{k}(1-p)^{(n-k)} = # \binom{10}{3}\left(\frac{1}{2}\right)^{3}\left(\frac{1}{2}\right)^{7}$
+
+choose(10,3)*(.5)^3*(.5)^7
+```
+ 
+*Using binomial distribution density function:*
+
+```{r}
+ dbinom(prob = 0.5, size = 10, x = 3)
+```
+ 
+*Using simulation (100,000 tosses):*
+
+```{r}
+sum(replicate(100000,sum(rbinom(prob = 1/2, size = 10, 1)) == 3))/100000
+```
+ 
+##### Example: Random Walk {.smaller}
+ 
+Generate 1000 up-down movements based on a fair coin toss and plot:
+ 
+```{r}
+x <- (cumsum(ifelse(rbinom(prob = 0.5, size = 1, 10000) == 0,-1,1)))
+plot(x, type = 'l', main = 'Random Walk')
+```
+ 
+##### Example: Generating Random Data {.smaller}
+
+```{r}
+randomWalk <- function(N)(cumsum(ifelse(rbinom(prob = 0.5, size = 1, N) == 0,-1,1)))
+AUDUSD <- 1.2345 + randomWalk(1000)*.0001
+plot(AUDUSD, type = 'l')
+```
+ 
+##### Example: OANDA FX Data {.smaller}
+
+```{r,message=FALSE,eval=FALSE}
+require(quantmod);require(TTR)
+EURUSD <- getSymbols("EUR/USD", src="oanda", auto.assign=FALSE)
+plot(EURUSD)
+lines(EMA(EURUSD,10), col='red')
+lines(EMA(EURUSD,30), col='blue')
+```
+
+<center><img src="figs/oanda_eurusd.png" height="400px" width="600px" /></center>
+ 
+##### Example: Connecting to kdb+ {.smaller}
+ 
+  - kdb+ is an online database of open time-series data
+```
+Rorys-MacBook-Pro:kdb rorywinston$ <b>./rlwrap q/m32/q -p 5000</b>
+KDB+ 3.1 2014.07.01 Copyright (C) 1993-2014 Kx Systems
+m32/ 8()core 16384MB rorywinston rorys-macbook-pro.local 127.0.0.1 NONEXPIRE  
+Welcome to kdb+ 32bit edition
+<b>q)\p</b>
+5000i
+<b>q) trades:([]time:100?.z.P;price:100?2.;
+  side:100?`B`S;exch:100?`CNX`RTM`EBS;sym:100?`EURUSD`AUDUSD`GBPUSD)</b>
+<b>q)10#trades</b>
+time                          price     side exch sym   
+--------------------------------------------------------
+2010.08.13D12:33:29.975458112 0.6019404 B    CNX  EURUSD
+2001.11.24D20:53:58.972661440 0.7075032 S    CNX  EURUSD
+2002.12.12D03:12:04.442386736 1.500898  S    CNX  GBPUSD
+2002.02.12D21:48:33.887104336 0.6170263 S    EBS  AUDUSD
+2014.05.01D06:59:44.647138496 0.8821325 S    EBS  GBPUSD
+2010.12.06D15:30:14.928601664 1.094677  S    RTM  AUDUSD
+2009.04.19D23:12:33.919967488 1.187474  B    RTM  GBPUSD
+2008.07.18D22:13:25.681742656 0.1768144 B    EBS  GBPUSD
+2010.08.22D10:16:15.261483520 0.3576458 S    EBS  AUDUSD
+2010.02.28D13:49:33.686598976 1.526465  S    RTM  EURUSD
+```
+ 
+##### Example: Connecting to kdb+ 
+ 
+```{r,eval=FALSE}
+setwd("/Users/rorywinston/sandbox/kdb")
+source("qserver.R")
+open_connection("localhost", 5000)
+trades <- k("select from trades")
+head(trades)
+                 time     price side exch    sym
+1 2010-08-13 22:33:29 0.6019404    B  CNX EURUSD
+2 2001-11-25 07:53:58 0.7075032    S  CNX EURUSD
+3 2002-12-12 14:12:04 1.5008982    S  CNX GBPUSD
+4 2002-02-13 08:48:33 0.6170263    S  EBS AUDUSD
+5 2014-05-01 16:59:44 0.8821325    S  EBS GBPUSD
+6 2010-12-07 02:30:14 1.0946771    S  RTM AUDUSD
+```
+ 
+kdb+ datatypes are converted to native R types
+ 
+##### Example: Reading Log Data From File 
+ 
+```{r, eval=FALSE}
+# Read file into data frame
+logfile <- read.csv("/tmp/application.log", sep=",", header=FALSE)
+# Set column descriptors
+colnames(logfile) <- c("time","message","severity")
+# Convert to native date/time
+logfile$time <- as.POSIXct(strptime
+                  (logfile$time, "%Y-%m-%d %H:%M:%OS"), tz="GMT")
+ 
+```
+ 
+##### Example: Using already existing Datasets
+ 
+The famous 'Air passengers' dataset
+
+```{r}
+plot(AirPassengers)
+```
+ 
+##### Example: Using Datasets:  {.smaller}
+
+  - 'Anscombe Quartet':4 x-y datasets, same stats props, Yet quite different.
+
+ 
+```{r,collapse=TRUE,fig.height=4,fig.width=5,fig.align='center'} 
+op <- par(mfrow = c(2,2),mar = rep(1,4))
+with(anscombe,{plot(x1,y1,pch = 20);plot(x2,y2,pch = 20);
+               plot(x3,y3,pch = 20);plot(x4,y4,pch = 20)})
+par(op)
+```
+ 
+
+##### Links
+ 
+  - http://www.r-project.org 
+
+  - Rory Winston, for the Learning R intro
+    - http://www.theresearchkitchen.com/archives/1017
+
+  - kdb+ is an online database of open time-series data
+    - http://kx.com/kdb-plus.php
+
