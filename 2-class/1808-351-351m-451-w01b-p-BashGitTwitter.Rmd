@@ -191,5 +191,7 @@ options("digits.secs" = 3)
 ### Links
  
   - http://www.r-project.org 
+  
+  And a bit more
 
 
