@@ -1,0 +1,221 @@
+---
+title: 'CWRU DSCI351-351M-451: HW1'
+author: "Prof.:Roger French, TA:JiQi Liu"
+date: "August 30, 2017, Due Tuesday September 4th, before class"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+ \setcounter{section}{1}
+ \setcounter{subsection}{0}
+
+<!--
+# Script Name: 1808-351-351M-451-HW1-NAME.Rmd
+# Purpose: This is a blank Rmd file to start a new open science data analysis from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+## So by now I believe everyone has
+
+### Logged into your ODS VDI, or your VUVlab VDI.   
+
+	- If not send the help@case.edu helpdesk an email, 
+	  - directed to CSE-IT, saying you are in DSCI351/351M/451 
+	  - and should have access to the ODS VDI, 
+	  - that you use Citrix REceiver to connect to.
+
+### Your H: drive is big enough 
+
+  - so that you can Git clone your personal fork of the Prof repo, 
+  - from Bitbucket down to `H:\Git\` folder.
+
+### You'll notice in HW1 
+
+  - That there is an initial read Leek's structure of a data analysis.  
+  - This all students should do.  
+
+### Ask Questions in CWRU-DSCI Slack Channel for DSCI351-351M-451
+
+  - This is the easier way to ask and answer questions
+  - You can use @JiQi Liu and @Roger French 
+    - To direct a question to us
+    - But anyone can answer the questions
+
+## 351, 351M and 451 students 
+
+  - will both do the last part of the homework, 
+    - where you are doing some R coding, 
+    - inside the R code blocks of the Rmd file 
+    - (between the $```{r}$ and the $```$ that closes the R code block in the Rmd file.
+    
+## And 451 students 
+
+  - will start writing about what they are considering for their Semester Project.  
+    - Read about the 451 Semester Project in 1-assignments>SemProj-451>1808-451-SemProj-Overview.pdf
+  - Your SemProj will have 3 in-class report outs on progress, and a final full report. 
+  - It should ideally be related to your thesis research, 
+    - and be a data analysis project that will help advance your research.  
+  - We will be defining and refining what you will do your Semester Project on, 
+    - in the next few weeks.    
+
+## Here are answers to a few questions we usually get about HW1
+
+A. "I am having trouble converting the Rmd file containing homework 1 into a PDF. I was able to save it as a .txt file--is it okay if I submit that instead of a PDF?"
+
+Once you have made a *.Rmd file, you compile it to make the pdf, by hitting the Knit button at the top of the Rstudio text editor, or you can click on the Knit button to choose Knit to PDF from the choices.  You can also use the keyboard shortcut Cntrl+Shift+K.  (You can find lots of keyboard shortcuts help with Alt+Shift+K). 
+
+And if you open the homework 1 Rmd file named "1808-351-351M-451-hw1-NAME.Rmd" and change NAME to your own name.  Then you can immediately compile that Rmd file to make the pdf.  This way you'll know that its not some error in what you have added to the file's text.
+Compiling to pdf, uses the LaTeX publishing distribution on your VDI. So if you are trying this on your own personal computer, it won't work, since you probably don't have a LaTeX distribution, such as MikTeX (for windows), MacTeX (for Macs), or TexLive for Linux, installed, so can't produce a LaTeX pdf output.  
+       
+
+B. "I was also wondering where we are supposed to submit our homework assignments. Are we supposed to upload them onto BitBucket?"
+
+You will upload your *.Rmd file (so we can see your coding style and commenting), and your compiled Pdf file to our Canvas Assignment page in canvas.case.edu for the DSCI351-351M-451 class.
+
+          
+
+## Read the LEEK handout
+
+  - in ./readings/1503LeekDataAnalyticStyle-outline.txt
+  - This is located in ./class/Leek/Leek-ADataAnalysisStructureAndOrganizing.pdf
+  - and look at Leek's book in ./readings/Texts/Leek-DataAnalyticStyle.pdf
+ 
+### On organizing a data analysis
+
+  - Jeff Leek is a biostatistician
+  - At Johns Hopkins School of Public Health
+
+### Steps in a data analysis
+
+  - Define the question
+  - Define the ideal data set
+  - Determine what data you can access
+  - Obtain the data
+  - Clean the data
+  - Exploratory data analysis
+  - Statistical prediction/modeling
+  - Interpret results
+  - Challenge results
+  - Synthesize/write up results
+  - Create reproducible code
+
+## DSCI 451 HW1 Assignment
+
+  - Make an separate Rmarkdown file (*.Rmd) discussing your Semester Project
+  - Which you compile to produce a pdf report
+  - About a data analysis question of interest to you
+    - Use figures, sections, math equations and hyperlinks
+    - Author, License, Version number, Changelog
+  - Submit the .Rmd file and the pdf on Canvas
+
+### For DSCI451 Grad Students
+
+  - This Rmd will be an initial proposal 
+    - Of your semester data science project
+  - Explain background of questin
+  - Experiments or approaches
+  - Data types and characterisitics.
+  - Use figures, sections, math equations and hyperlinks
+
+## DSCI 351/351M/451
+
+  - Enter all work into this rmd file
+  - Make sure it compiles and submit both the rmd and pdf 
+  - Rmd documents run code in block segments 
+    - defined and closed by $```$ with an option to provide parameters
+
+```{r}
+print('hello world')
+```
+
+- Answer all questions in below in the provided code blocks
+
+### Basic R operations
+
+- Show an example of addition, subtraction, multiplication, division, and an exponential below
+
+```{r}
+
+```
+
+### Working with data frames
+
+  - Data frames are an important data format in R
+  - Example data can be loaded from base R
+  - Run the code below to load the iris dataset into your environment
+  - This data set will be used for the later problems
+
+```{r}
+data("iris")
+head(iris)
+```
+
+  - Give the class of each of the  columns in the iris data set
+  - Explain in code comments what is a factor and how it differs from a character
+
+```{r}
+
+```
+
+  - Use the table() function to determine how many species there are 
+    - and how many observation each one has (Species column in the data frame)
+
+```{r}
+
+```
+
+  - Use the subset() function create a new data frame of only versicolor flower data
+
+```{r}
+
+```
+
+  - Give the mean and median of each of the numeric columns for the versicolor data frame
+  - Why might the mean and median of the entire iris dataset be misleading?
+
+```{r}
+
+```
+
+### Modeling and plotting
+
+  - Use the lm() and plot() functions to build a simple linear model 
+    - of versicolor petal length as a function of petal width
+  - What are the dependant and independant variables in this case?
+  - Add the model to the plot with abline()
+
+```{r}
+
+```
+
+- Print the summary of this model
+
+```{r}
+
+```
+
+## Links
+ 
+  - http://www.r-project.org 
+  - http://rmarkdown.rstudio.com/  
+
+<!--
+# Keep a complete change log history at bottom of file.
+# Complete Change Log History
+# v0.00.00 - 1405-07 - Nick Wheeler made the blank script
+##########
+

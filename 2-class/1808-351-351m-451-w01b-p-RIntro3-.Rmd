@@ -1,0 +1,225 @@
+---
+title: "Basics of R"
+author: "Alan Curran, Roger French"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+ \setcounter{section}{1}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{2}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
+```
+
+### Basics of R
+
+#### Math operations 
+
+```{r}
+  2 + 2
+  8 / 4
+  2 * 3
+  3 ^ 3
+  a = 3
+  b = 3
+  a + b
+```
+
+  - Assignment operator should ALWAYS be used instead of =
+  - It is directional
+  - And it meets Google's R style guide
+    - You can findd the style guide in 3-readings>3-CheatSheets
+  - = works in most cases too but may cause problems
+
+```{r}
+  a <- 3
+  b <- 6
+  
+  a <- b
+  a
+  
+  a <- 3
+  b <- 6
+  
+  a -> b
+  a
+```
+
+#### Object Classes
+
+```{r}
+  # numerics
+  a <- 5
+  class(a)
+  # integers
+  b <- as.integer(42)
+  class(b)
+  # logicals
+  c <- TRUE
+  class(b)
+  # characters
+  d <- "hello world"
+  class(c)
+  # factors
+  e <- as.factor(c("1", "1", "a", "1", "c", "a"))
+  class(e)
+  e
+  # quick note it you want to convert a factor to a numeric 
+  # You have to convert it to a character first, then a numeric
+```
+
+#### Indexing
+
+  - R uses brackets to reference a data index
+  - data["row","column"]
+  - Standard organization for data set has varaibles as columns and observations as rows
+  - Keep in mind that R indexing starts from 1, not 0
+  - We can load a test data set for indexing
+
+```{r}
+  data("iris")
+  
+  iris[1,2]
+  
+  # Leaving a row or column input blank puts all values
+  # First column
+  iris[,1]
+  
+  # First row
+  iris[1,]
+  
+  # Data frames have associated column names
+  colnames(iris)
+  
+  # Columns can be called by name using $
+  # Rstudio features tab completion for thing like column names
+  iris$Sepal.Length
+```
+
+#### Built-in Functions
+
+  - Functions are processes that take an input and give an output
+  - Rstudio has tab completion for function inputs
+
+```{r}
+  max(iris$Petal.Length)
+  mean(iris$Sepal.Width)
+  sd(iris$Petal.Width)
+  
+  # Functions can take multiple inputs, they can be named in the call or placed in order
+  plot(x = iris$Sepal.Length, y = iris$Sepal.Width)
+  
+  # x and y can be specified with x = ... in any order or the inputs can be given in order
+  # This plot is the same as the previous
+  plot(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+#### Matrix operations
+
+```{r}
+  mat <- matrix(data = 1:9, nrow = 3, ncol = 3)
+  mat
+  
+  # Element multiplication
+  mat*mat
+  
+  # Matrix multiplication
+  mat %*% mat
+  
+  # t() function is for transposing
+  t(mat)
+  mat %*% t(mat)
+  
+  # Inverse matrix
+  mat[2,3] <- 18
+  solve(mat)
+  solve(mat) %*% mat
+```
+
+#### Structures in R
+
+```{r}
+  # for loops
+  for (i in 1:5) {
+    print(i)
+  }
+  
+  # While loops 
+  i <- 10
+  while (i > 5) {
+    i <- i - 1
+    print(i)
+  }
+  
+  # if statments
+  dave <- TRUE
+  # if (dave) {} also works
+  if (dave == TRUE) {
+    print("good morning dave")
+  }
+  
+  # User defined functions
+  math <- function(a,b) {
+    c <- a + b*2
+    # return defines what the output of the function is
+    return(c)
+  }
+  math(2,6)
+```
+
+
+
+### Recommended Functions
+
+This is a list of functions in base R I would recommend knowing. 
+
+  - There are countless more functions and packages to use, 
+    - but these are cover most of the basics of data manipulation. 
+  - Additional information can be found by entering ?<function name> in the R console.
+
+#### Useful R Functions
+
+  - install.packages()
+  - library()
+  - read.csv()
+  - readlines()
+  - class()
+  - min()
+  - max()
+  - median()
+  - mean()
+  - sd()
+  - c()
+  - rbind()
+  - merge()
+  - paste()
+  - ifelse()
+  - subset()
+  - complete.cases()
+  - is.na()
+  - which()
+  - grep()
+  - grepl()
+  - gsub()
+  - as.numeric()
+  - as.character()
+  - as.factor()
+  - list.files()
+  - plot()
+  - abline()
+  - points()
+  - lm()
+  - summary()
+
+

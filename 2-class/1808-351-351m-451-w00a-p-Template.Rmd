@@ -13,15 +13,15 @@ output:
 urlcolor: blue
 ---
 
+ \setcounter{section}{1}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{0}
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
 ```
 
- \setcounter{section}{1}
- \setcounter{subsection}{1}
- \setcounter{subsubsection}{0}
- 
  <!-- 
  How to make comments inside Rmarkdown
 # Script Name: My class notes template for Fall 2018
