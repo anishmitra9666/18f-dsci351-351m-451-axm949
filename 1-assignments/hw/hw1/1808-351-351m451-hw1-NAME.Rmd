@@ -1,6 +1,6 @@
 ---
 title: 'CWRU DSCI351-351M-451: HW1'
-author: "Prof.:Roger French, TA:JiQi Liu"
+author: "Prof.:Roger French, TA:JiQi Liu,Student:Anish Mitra"
 date: "August 30, 2017, Due Tuesday September 4th, before class"
 output: 
   pdf_document:
