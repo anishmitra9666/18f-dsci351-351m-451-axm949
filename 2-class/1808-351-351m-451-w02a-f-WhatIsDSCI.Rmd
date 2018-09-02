@@ -1,0 +1,58 @@
+---
+title: 'CWRU DSCI351-451: Exploratory Data Science'
+author: "Prof.:Roger French, TA:JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+ 
+ \setcounter{section}{2}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{1}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+-->
+
+<!-- Or on a single line like this -->
+ 
+#### Reading, Homeworks, Projects, SemProjects
+
+  - Readings: 
+    - for today: RPR 35-64
+    - For Thursday RPR 65-93
+  - Homeworks
+    - HW1 due today
+    - HW2 available on Thursday 
+  - Data Science Projects: 
+  
+  - 451 SemProjects:  
+  
+  - Friday Comm. Hour
+
+
+#### Textbooks
+
+  - [Peng: R Programming for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=F1mVHgAAAEAJ&pg=GBS.PA1)
+  - [Peng: Exploratory Data Analysis with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=R-09BgAAAEAJ&pg=GBS.PA1)
+  - [Open Intro Stats, v3](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=G2EOBwAAAEAJ&pg=GBS.PA0)
+  - [Wickham: R for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=I6y3DQAAQBAJ&pg=GBS.PA1)
+  - [Hastie: Intro to Statistical Learning with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=KtuPCwAAAEAJ&pg=GBS.PA0)
+  
+#### Syllabus
+
+![DSCI353-453 Syllabus](./figs/syllabus.png)
+
+
+
+### Links
+ 
+
+
