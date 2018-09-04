@@ -3,7 +3,7 @@ CWRU DSCI351-451 EDA:
 Data Analytic Style
 ========================================================
 author: Roger H. French 
-date: 02 September, 2018
+date: 04 September, 2018
 autosize: true
 transition: rotate
 transition-speed: fast
