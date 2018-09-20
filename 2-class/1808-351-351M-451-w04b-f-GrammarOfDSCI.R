@@ -32,10 +32,10 @@ summary(diamonds) #  produce result summaries of the results of
 
 diamonds %>% 
   ggplot(aes(x = carat,y = price)) +  # aes is aesthetic mapping
-  geom_point(alpha = 0.5) + # each data point as a point 
-  facet_grid(~cut) + # facet the scatter plot on cut, color or clarity
-  stat_smooth(method = lm, formula = y ~ poly(x,2)) + # fit a 2nd order lin. model
-  theme_bw()
+    geom_point(alpha = 0.5) + # each data point as a point 
+    facet_grid(~cut) + # facet the scatter plot on cut, color or clarity
+    stat_smooth(method = lm, formula = y ~ poly(x,2)) + # fit a 2nd order lin. model
+    theme_bw()
 
 # With this simple visualization, 
   # we can quickly see that price increases with carat size,
