@@ -46,9 +46,11 @@ knitr::opts_chunk$set(echo = TRUE)
   * Data Science Projects: 
     * Project 1 is due Tuesday Oct. 2nd
   * 451 SemProjects:  
+    * Turn in Basic Premise by Friday, to get feedback
     * SemProj Report Out 1, Next Tuesday and Thursday, 8 minutes, 2 minutes questions
-    * Tuesday: 
-    * Thursday: 
+      * Tuesday: 
+      * Thursday: 
+      * Turn in your .Rpres/.Rmd and pdf of SemProj #1 Report Out to Canvas
   * Friday Comm. Hour
     * Discuss SemProj and Proj1 
 
