@@ -2,11 +2,11 @@ ODS Data Science Research Projects: Fall 2018
 DSCCI352, 353, 453, and EMSE 325
 
 DSCI 352
-  Lucas Fridman: 
+  Lucas Fridman: Condition Monitoring of Industrial Equipment
   Maria Pawluk: 
 
 DSCI 352M
-  Wyatt SaintClair: 
+  Wyatt SaintClair: Wind Turbine Siting For Energy Yield
 
 DSCI 452
   Shreyas Kamath: 
