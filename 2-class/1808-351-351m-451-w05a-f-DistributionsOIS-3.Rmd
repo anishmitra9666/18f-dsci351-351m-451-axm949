@@ -1,0 +1,107 @@
+---
+title: 'CWRU DSCI351-351M-451: Exploratory Data Science'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ \setcounter{section}{5}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{1}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+-->
+
+<!-- Or on a single line like this -->
+
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  * Homework: 
+    * HW3 Due this morning
+      * 
+  * Readings: 
+    * R4DS 1-3 for today
+    - R4DS Chapters 4-6 for Thursday
+  * Projects: We will have four 2 week EDA projects
+    * Project 1 due Tuesday October 2nd, before class
+  * 451/352/352M/452 SemProjects:  
+    * SemProject Report Out 1, This Tues/Thurs
+
+#### Syllabus
+
+![DSCI351/451 Syllabus](./figs/syllabus.png)
+
+***
+
+
+#### Data Science Twitter
+
+##### What is WDI
+
+  * [Analyzing World Bank data with WDI, googleVis Motion Charts](https://gigadom.wordpress.com/2016/09/18/analyzing-world-bank-data-with-wdi-googlevis-motion-charts/)
+
+##### What is the Tidy-verse?
+
+  * Who is [Hadley Wickham](https://en.wikipedia.org/wiki/Hadley_Wickham)
+  * [Hadley Wickham (@hadleywickham) | Twitter](https://twitter.com/hadleywickham)
+  
+##### Other Data Scientists to Follow
+
+  * [Roger D. Peng (@rdpeng) | Twitter](https://twitter.com/rdpeng) 
+    * Johns Hopkins BioStats
+  * [Jeff Leek (@jtleek) | Twitter](https://twitter.com/jtleek)
+    * Johns Hopkins BioStats
+  * [Mine CetinkayaRundel (@minebocek) | Twitter](https://twitter.com/minebocek?lang=en)
+    * Open Intro Stats author
+  * [Hilary Parker (@hspter) | Twitter](https://twitter.com/hspter)
+    * Biostats PhD now working in e-commerce
+  * [Jenny Bryan (@JennyBryan) | Twitter](https://twitter.com/JennyBryan)
+    * Stats Prof at Univ. of British Columbia
+  - [Mara Averick (@dataandme) | Twitter](https://twitter.com/dataandme)
+  - [Rbloggers (@Rbloggers) | Twitter](https://twitter.com/Rbloggers)
+  - [Python Programming (@python_programm) | Twitter](https://twitter.com/python_programm)
+
+#### We're starting to look at Distributions
+
+  * Such as the Normal Distribution
+    * On which much of our statistical inference is based.
+  * Probability Distributions built up from samples of a population
+  
+#### For this we want to have a feeling for a few concepts
+
+  * An Observation
+    * And a sequence of observations
+  * Sample Size
+  * Fluctuations in outcomes
+    * Humans are not good at appreciating Fluctuations
+  * Priors, are previous observations
+    * These are typically uncorrelated to the next observation
+      * This is the Frequentist perspective
+    * If we believe knowledge of Priors can inform us of the future
+      * We are Bayesians, ie followers of Bayes' theorem
+      
+#### Are you a 
+
+  * [Frequentist](https://en.wikipedia.org/wiki/Frequentist_inference)
+    * This is safest
+  * [Bayesian?](https://en.wikipedia.org/wiki/Bayesian_inference)
+    * This is coolest, but can be complicated to do correctly
+      
+      
+#### Open Intro Stats Chapter 3
+
+
