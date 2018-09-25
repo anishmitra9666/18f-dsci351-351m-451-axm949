@@ -1,16 +1,15 @@
 ---
 title: "CWRU DSCI351-451: Dataframe 7 Ways and Violent Crime"
-author: "Roger H. French, Alan Curran"
-date: "October 3, 2017"
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   pdf_document:
     toc: true
     number_sections: true
-    toc_depth: 5
+    toc_depth: 6
+    highlight: tango
   html_document:
-    toc: true
-    number_sections: true
-    toc_depth: 5
+    toc: yes
 urlcolor: blue
 ---
 
@@ -45,6 +44,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #### Examine a Data Frame in R with 7 Basic Functions
 
 When one first started learning R, 
+
   - it seems way more complicated than what you were used to 
   - with looking at spreadsheets in Microsoft Excel. 
   
