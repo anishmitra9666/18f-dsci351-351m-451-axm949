@@ -1,0 +1,31 @@
+Hi 451, 352, 352M, 452 students
+    Next week we will do the First SemProject Report Out
+    The topics to cover are listed in the SemProject Assignment Document
+    -> in the file 1-assignments/DSCI352-452-SemProj-Overview.pdf
+    or the file 1-assignments/SemProj-451/1808-451-SemProj-Overview.pdf
+
+----
+For Friday 9/20/2018, please fill out and submit 
+    the ...SemProj-WeeklyReport-03-BasicPremise.Rmd
+    So we can give you some feedback if needed
+
+----
+The SemProj Report Out presentation is done as an Rpres or a Rmd/pdf
+    And includes the following topics of your data science project
+    SemProj Report Out #1
+      ### SemProj. Part a) Define Question
+        * Background on the research area and critical issues
+        * Define the question
+        * Define the ideal data set
+        * Determine what data you can access
+        * Define critical capabilities and identify packages you will draw upon
+        * Obtain the data, define you target data structure
+        * Clean and tidy the data 
+
+----
+    Both DSCI451 and DSCI 352/452 students will present in DSCI351/351M/451 class held in Olin 313 from 11:30 to 12:45 on Tuesday September 25th or 27th.
+    We will send a signup sheet to choose your day to present
+
+    After your presentation, submit your SemProj report out document on Canvas, to the assignment page. 
+
+    

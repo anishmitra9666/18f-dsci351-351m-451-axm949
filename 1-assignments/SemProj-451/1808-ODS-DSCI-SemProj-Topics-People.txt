@@ -1,0 +1,21 @@
+ODS Data Science Research Projects: Fall 2018
+DSCCI352, 353, 453, and EMSE 325
+
+DSCI 352
+  Lucas Fridman: Condition Monitoring of Industrial Equipment
+  Maria Pawluk: 
+
+DSCI 352M
+  Wyatt SaintClair: Wind Turbine Siting For Energy Yield
+
+DSCI 452
+  Shreyas Kamath: 
+  
+DSCI 451
+  Raam Arjunan: Time Series on Financial Data
+  Sara Gutierrez: Gravity Data from the GRAIL Mission
+  Tingrui Hu: Attachment Tranfer Optimization
+  William Huddleston: Anode Composite Coarsening
+  Kevin Pachuta: UV/Vis Absorption Spectra: Exfoliated CoO2
+
+

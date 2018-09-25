@@ -1,0 +1,256 @@
+---
+title: 'CWRU DSCI351-351M-451: Homework 3'
+author: "Prof.:Roger French, TA: JiQi Lim"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!--
+# Script Name: 1708-351-451-HW2-NAME.Rmd
+# Purpose: This is an Rmd HW file to do your HW in
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+\setcounter{section}{3}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
+
+
+#### HW2, 5 points, 2 questions.
+
+  -  Question 1 = 3 points
+  -  Question 2 = 2 points
+
+Details
+
+  - Due Tuesday September 25th
+    - Before Class
+  - The grading is done on how you show your thinking, 
+    - explain yourself and 
+    - show your Rcode and 
+    - the output you got from your code.
+  - Code style is important
+    - Follow Rstudio code diagnostics notices
+    - And the [Google R Style Guide](https://google.github.io/styleguide/Rguide.xml)
+
+To be done as an Rmd file, 
+
+  - where you turn in 
+    - the Rmd file and 
+    - the compiled pdf showing your work. 
+    - and the R script of IntroR.R
+    
+You will want to produce a report type format 
+
+  - (html and pdf type document) to turn in. 
+  - And not an ioslides or beamer (slide type) compiled output. 
+    - These are presentation formats, and can be fussy
+
+Also are you backing up your git repo 
+
+  - in a second and third location, 
+  - to avoid corruption problems?
+
+
+
+#### 1. Pipelines
+
+We have seen pipeline %>% notation, 
+
+  - You can read about them in
+    - In dplyr package help
+    - In Hadley Wickham's "R 4 Data Science" book
+  - This is a practice for you to begin using pipelines
+  - All work must be done using only one dplyr pipeline per question 
+    - with no intermediate variables, 
+    - including using summarise() to get results
+  - For reference, here are examples of 
+    - correct and incorrect answers for a problem
+
+Example: What is the average petal length of setosa irises?
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# incorrect
+data("iris")
+df <- iris %>%
+  filter(Species == "setosa") 
+
+mean(df$Petal.Length)
+
+# correct
+iris %>%
+  filter(Species == "setosa") %>%
+  summarise(mean(Petal.Length))
+
+```
+
+1a: What is the max, min, and average price of diamonds with a "Very Good" cut?
+ 
+```{r}
+
+data("diamonds")
+head(diamonds)
+str(diamonds)
+?diamonds
+
+```
+
+1b: What is the average carat weight for each cut of diamond? 
+ 
+```{r}
+
+```
+
+1c: Add a variable that is a ratio of the price per weight for each diamond. 
+
+  - Which cut of diamond has the highest average price to weight ratio and what is it?
+
+```{r}
+
+```
+
+1d: What is the 100th most expensive diamond in each color group of at least 0.30 carets? 
+
+  - (show only price and color variables) 
+ 
+```{r}
+
+```
+
+#### 2. ggplot2
+
+ggplot2 is a package for making plots from data. 
+
+It provides tools for making complex and detailed graphs. 
+
+ggplot2 builds graphs in layers, 
+
+  - where first the graph must be specified, 
+  - then layers are added to the plot using the '+' operator.
+
+In this example nothing appears in the plot
+
+```{r}
+library(ggplot2)
+data("mpg")
+
+ggplot(data = mpg, aes(x = cyl, y = hwy))
+
+```
+
+This is because I did not define the next layer, 
+
+  - all I did was define some kind of graph between cylinders and highway mpg
+
+Since we have already defined the data at the beginning, 
+
+  - we don't need to specify it in the layer
+
+```{r}
+
+ggplot(data = mpg, aes(x = cyl, y = hwy)) +
+  geom_point()
+
+# or a different layer
+
+# here we have to define cyl as the group for each box
+ggplot(data = mpg, aes(x = cyl, y = hwy)) +
+  geom_boxplot(aes(group = cyl))
+
+```
+
+We can add additional information about showing data in our plot 
+
+  - by adding parameters into the aesthetics (aes()) function
+
+```{r}
+
+ggplot(data = mpg, aes(x = cty, y = hwy)) +
+  geom_point(aes(size = displ))
+
+```
+
+We can also add on additional layers if we want to, 
+
+  - keep in mind ordering is important. 
+  
+The data for each layer can be defined per layer 
+
+  - this is important if you're trying to add multiple data sets to a plot
+
+```{r}
+
+ggplot() +
+  geom_point(data = mpg, aes(x = cty, y = hwy)) +
+  geom_smooth(data = mpg, aes(x = cty, y = hwy), method = "lm")
+
+```
+
+Now it's your turn to make some plots
+
+  - All plotting must be done using ggplot2, 
+  - Any data manipulation must be done with dplyr pipelines 
+    - running into the ggplot funciton
+
+2a: Use the mtcars data set, 
+  
+  - plot mpg vs displacement and color by cylinders
+ 
+```{r}
+
+data("mtcars")
+?mtcars
+
+
+
+```
+
+2b: Create a boxplot of the horsepower readings for each cylinder count, 
+
+  - show the data points on top of the plot
+ 
+```{r}
+
+```
+
+2c: Plot a histogram of the number cars in each carburetor count group
+
+```{r}
+
+```
+
+2d: Explain why these two plots look different, 
+
+  - why does the color and key change between them?
+ 
+```{r}
+
+ggplot(data = mpg, aes(x = cty, y = hwy)) +
+  geom_point(aes(color = cyl, size = displ))
+
+ggplot(data = mpg, aes(x = cty, y = hwy)) +
+  geom_point(aes(color = factor(cyl), size = displ))
+
+```
+
