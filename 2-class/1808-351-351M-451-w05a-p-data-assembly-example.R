@@ -21,7 +21,7 @@
 # Define dat_total
 
   dat_total <- NULL
-
+i <- files[1]
 # We can now use a for loop through all of the file names we want to read
   for (i in files) {
   
@@ -33,7 +33,14 @@
     dat_total <- rbind(dat_total, dat)
   
   }
+library(tidyverse)
+library(purrr)
 
+dat_total2 <- NULL
+dat_total2 <- files %>%
+  map(~read_csv(file.path('data/sdle-sf/',.),skip = 3)) %>%
+  reduce(rbind)
+names(dat_total2)[c(1,2)] <- names(dat)[c(1,2)] 
 # "rbind" is row bind, and "cbind" is column bind
 
   
