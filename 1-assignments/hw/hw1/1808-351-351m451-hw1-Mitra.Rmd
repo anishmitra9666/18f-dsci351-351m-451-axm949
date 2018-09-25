@@ -2,12 +2,15 @@
 title: 'CWRU DSCI351-351M-451: HW1'
 author: "Prof.:Roger French, TA:JiQi Liu, Student:Anish Mitra"
 date: "August 30, 2017, Due Tuesday September 4th, before class"
-output: 
-  pdf_document:
-    toc: true
-    number_sections: true
-    toc_depth: 3
+output:
+  pdf_document: 
     highlight: tango
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     toc: yes
 urlcolor: blue
@@ -149,18 +152,23 @@ print('hello world')
 - Show an example of addition, subtraction, multiplication, division, and an exponential below
 
 ```{r}
+#Example of addition
 print("Addition")
 x <- 1 + 1
 x
+#Example of subtraction
 print("Subtraction")
 y <- 2 - 2
 y
+#Example of multiplication
 print("Multiplication")
 z <- 2 * 2
 z
+#Example of division
 print("Division")
 a <- 2 / 2
 a
+#Example of an exponential
 print("Exponential")
 b = 2^3
 b
@@ -182,27 +190,41 @@ head(iris)
   - Explain in code comments what is a factor and how it differs from a character
 
 ```{r}
-
+x <- lapply(iris, class)
+x
+#The difference is that a factor is a categorical variable whereas a factor #variable is not.This basically means that factors have character levels. These #levels categorise the data. Consequentially, factors have a different number #of data values which it can distinguish between.
 ```
 
   - Use the table() function to determine how many species there are 
     - and how many observation each one has (Species column in the data frame)
 
 ```{r}
-
+class(iris)
+table(iris[5])
 ```
 
   - Use the subset() function create a new data frame of only versicolor flower data
 
 ```{r}
-
+versicolor <- iris[5]
+versicolordataframe <- subset.data.frame(iris, versicolor == "versicolor")
+versicolordataframe
 ```
 
   - Give the mean and median of each of the numeric columns for the versicolor data frame
   - Why might the mean and median of the entire iris dataset be misleading?
 
 ```{r}
-
+#Mean and median for sepal length
+print("Mean");lapply(versicolordataframe[1], mean); print("Median");lapply(versicolordataframe[1], median)
+#Mean and median for sepal width
+print("Mean");lapply(versicolordataframe[2], mean); print("Median");lapply(versicolordataframe[2], median)
+#Mean and median for petal length
+print("Mean");lapply(versicolordataframe[3], mean); print("Median");lapply(versicolordataframe[3], median)
+#Mean and median for petal width
+print("Mean");lapply(versicolordataframe[4], mean); print("Median");lapply(versicolordataframe[4], median)
+print("The mean and median might be misleading since we don't know the standard deviation and therefore we have nothing to compare the mean and median with.")
+print("The dataset for iris also has three different species so this implies that the mean and median might not be representative. It is better to take the individual species' mean and median first.")
 ```
 
 ### Modeling and plotting
@@ -213,13 +235,19 @@ head(iris)
   - Add the model to the plot with abline()
 
 ```{r}
-
+print("The dependent variable is the versicolor petal length and the dependent variable is the petal width")
+petallength <- versicolordataframe$Petal.Length
+petalwidth <- versicolordataframe$Petal.Width
+graphofversicolor <- plot(petalwidth, petallength)
+graphofversicolor
+fitofversicolor <- lm(petallength ~ petalwidth, graphofversicolor)
+abline(fitofversicolor)
 ```
 
 - Print the summary of this model
 
 ```{r}
-
+summary(fitofversicolor)
 ```
 
 ## Links
