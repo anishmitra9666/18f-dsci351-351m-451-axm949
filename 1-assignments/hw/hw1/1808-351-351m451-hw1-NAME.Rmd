@@ -1,6 +1,6 @@
 ---
 title: 'CWRU DSCI351-351M-451: HW1'
-author: "Prof.:Roger French, TA:JiQi Liu, Student:Anish Mitra"
+author: "Prof.:Roger French, TA:JiQi Liu"
 date: "August 30, 2017, Due Tuesday September 4th, before class"
 output: 
   pdf_document:
@@ -149,21 +149,7 @@ print('hello world')
 - Show an example of addition, subtraction, multiplication, division, and an exponential below
 
 ```{r}
-print("Addition")
-x <- 1 + 1
-x
-print("Subtraction")
-y <- 2 - 2
-y
-print("Multiplication")
-z <- 2 * 2
-z
-print("Division")
-a <- 2 / 2
-a
-print("Exponential")
-b = 2^3
-b
+
 ```
 
 ### Working with data frames
