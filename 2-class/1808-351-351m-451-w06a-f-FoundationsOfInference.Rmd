@@ -169,7 +169,7 @@ The combinations are similar to those described above, and can be ranked from be
 
 --------------------------
 
-#####Probabilities[edit]
+##### Probabilities[edit]
 
   * With three six-sided dice there are 6 × 6 × 6 or 216 possible permutations.
     * 4-5-6: 6/216 = 2.777777778% (Automatic Win)
@@ -177,6 +177,10 @@ The combinations are similar to those described above, and can be ranked from be
     * Point: 90/216 = 41.66666667%
     * 1-2-3: 6/216 = 2.777777778% (Automatic Loss)
     * Meaningless permutations: 108/216 = 50%
+
+##### dice, an R package to calculate dice games
+
+[dice](https://CRAN.R-project.org/package=dice)
 
 ##### [Rolling the Dice on a Warm Night](http://www.nytimes.com/2009/08/16/nyregion/16ritual.html?_r=0)
 
