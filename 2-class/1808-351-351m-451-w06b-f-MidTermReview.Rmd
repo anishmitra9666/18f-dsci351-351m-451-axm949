@@ -1,16 +1,15 @@
 ---
 title: 'CWRU DSCI351-451: MidTermReview'
-author: "Prof.:Roger French, TA:Alan Curran"
-date: "Oct. 10, 2017"
-output:
+# author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
   pdf_document:
     toc: true
     number_sections: true
-    toc_depth: 5
+    toc_depth: 6
+    highlight: tango
   html_document:
-    toc: true
-    number_sections: true
-    toc_depth: 5
+    toc: yes
 urlcolor: blue
 ---
  
