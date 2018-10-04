@@ -1,0 +1,382 @@
+---
+title: 'CWRU DSCI351-451: MidTermReview'
+author: "Prof.:Roger French, TA:Alan Curran"
+date: "Oct. 10, 2017"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 5
+  html_document:
+    toc: true
+    number_sections: true
+    toc_depth: 5
+urlcolor: blue
+---
+ 
+ \setcounter{section}{7}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{0}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2017
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+
+<!-- Or on a single line like this -->
+ 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  * Homework: 
+    * HW 4 release on Thursday October 12th
+    - HW 4 Due Tuesday October 17 before class
+  * Readings: 
+    - 
+  * 451 SemProjects:  
+    * 
+
+
+#### Syllabus
+
+![DSCI351/451 Syllabus](./figs/syllabus.png)
+
+***
+
+#### setup for r-code chunks
+
+  - rmarkdown::render('1502-w06b-f-FrenchDSCI351-451-numerical-inference.Rmd', 'all')
+
+```{r,echo=TRUE, message=TRUE}
+options("digits" = 5)
+options("digits.secs" = 3)
+library(learningr)
+library(tidyverse)
+```
+
+#### Midterm
+
+  - Testing Concepts, OpenIntro Stats, and Learning R, Learning Rstudio 
+  - Your Data Science Tool Chain
+  - Open and Reproducible Science
+  - Steps in Data Analysis
+  - Done as Rmd and Rscripts
+  
+##### Midterm is open book / open resource
+  
+  - The midterm will be given as an Rmd
+  - You will work in the Rmd file
+  - Writing and doing Rcode chunks
+  - You have the resources of 
+  - - Your repository
+  - - R Help
+  - - Other online resources
+  - Open Data Science Approach
+  - - What can you accomplish
+  - - Using all available resources
+  
+##### Midterm Does Not Cover Foundations of Inference 
+
+  - Foundations of Inference (OIS-4)
+  - Inference for Numerical Data (OIS-5)
+  - Inference for Categorical Data (OIS-6)
+
+##### Topics Covered In Class
+
+  - both Foundations and Practicum topics 
+  
+
+#### Midterm Concepts e. g. Open Data Science, Data Analysis, EDA, Visualiation
+
+  - Git, Rstudio, R, R packages
+  - Graphics, Base and GGPlot2
+  - Data Assembly, Cleaning
+  - Exploratory Data Analysis
+  - Tidyverse: Pipes, dplyr, mutate etc. 
+  - Study Design
+  - Sampling and Populations
+  - Other topics
+
+###### Data Science Tool Chain
+
+#### R statistics programming language 
+  
+  - \> 8000 packages, free and open source software (FOSS)
+
+Python
+
+  - Also a good statistical environment
+  - not as well developed for stats
+  - but better are substantial number crunching
+
+There are many other stats softwares and languages
+
+  - SPSS, SAS, STATA, 
+    - But these are not useful for automated analysis
+  
+##### But Excel, or mousey/mousey programs are not for data science
+
+  - Can not record the sequential processing
+    - i.e. the script of your analysis
+  - don't lead to reproducible and open science
+  - can't distribute code, data and analysis and report
+
+##### IDE (Integrated Development Environment)
+
+  - Comfortable environment for getting going
+  - Rstudio for R, 
+  - Spyder or Eclipse with PyDev for Python
+
+##### Yet everything can be done at command line
+
+  - This enables automation 
+  - And large scale analysis
+  - Using scripting (bash scripting)
+  - Simple automation
+
+##### Git Repositories for content versioning
+
+  - Can pursue branches and revert to earlier versions
+  - Enables collaboration
+  - Robust code review
+  - Fork and develop in a community
+  - IDEs support Git Versioning
+  
+##### Markdown languages
+
+  - Enable integrated reports, code, data in repositories
+  - RMarkdown2 for R
+  - iPython Notebooks for Python
+  - And Report can autoupdate with a simple re-compile
+
+Direction towards interactive data science
+
+
+#### Peng's R Programming (PRP) and Exploratory Dati Analysis (EDA)
+
+##### Using R as a calculator
+
+  - Mathematical operations and vectors
+  - Assigning variables
+  - Special numbers
+  - Logical vectors
+
+##### Inspecting variables and your workspace
+
+  - Classes
+  - Different types of numbers
+  - Other common classes
+  - Checking and changing classes
+  - Examining variables
+  - The workspace
+
+##### Vectors, matrices and Arrays, List \& Dataframes
+
+  - Vectors
+  - Matrices \& Arrays
+  - Lists
+  - Data Frames
+  - - Creating Data Frames
+  - - Indexing Data Frames
+  - - Basic Data Frame Manipulation
+
+##### Environments & Functions
+
+  - Environments
+  - Functions
+  - - Creating and Calling Functions
+  - - Passing Functions to and from Other Functions
+  - - Variable Scope
+  
+##### Strings & Factors
+
+  - Strings
+  - - Constructing and Printing Strings
+  - - Formatting Numbers
+  - - Special Characters
+  - - Changing Case
+  - - Extracting Substrings
+  - - Splitting Strings
+  - - File Paths
+  - Factors
+  - - Creating Factors
+  - - Changing Factor Levels
+  - - Dropping Factor Levels
+  - - Ordered Factors
+  - - Converting Continuous Variables to Categorical
+  - - Converting Categorical Variables to Continuous
+  - - Generating Factor Levels
+  - - Combining Factors
+ 
+##### Getting Data
+
+  - Built-in Datasets
+  - Reading Text Files
+  - - CSV and Tab-Delimited Files
+  - - Unstructured Text Files
+  - - XML and HTML Files
+  - - JSON and YAML Files
+  - Reading Binary Files
+  - Web Data
+  - - Sites with an API
+  - - Scraping Web Pages
+ 
+##### Cleaning and Transforming (Tidying)
+
+  - Cleaning Strings
+  - Manipulating Data Frames
+  - - Adding and Replacing Columns
+  - - Dealing with Missing Values
+  - - Converting Between Wide and Long Form
+  - - Using SQL
+  - Sorting
+  
+##### Exploring and Visualizing (EDA)
+
+  - Summary Statistics
+  - The Three Plotting Systems
+  - - Take 1: base Graphics
+  - - (We Ignore)Take 2: lattice Graphics
+  - - Take 3: ggplot2 Graphics
+  - Scatterplots
+  - Line Plots
+  -  Histograms
+  -  Box Plots
+  - Bar Charts
+  - Other Plotting Packages and Systems
+
+
+#### So in DSCI
+
+  - Your learning coding
+  - statistical concepts, tools, and approaches
+  - open data science methods
+  - open collaboration and learning approaches
+
+#### R for Data Science (R4DS)
+
+##### Writing R scripts and the R console
+
+- - Moving around RStudio  
+  - Features of the R console
+  - Features of the source editor
+
+##### Viewing and Plotting Data
+
+  - Object Browser
+  - Plotting
+  - Plotting with Manipulate Package
+  
+##### Managing R Projects
+
+  - R Projects
+  - Version Control with Git
+  
+##### Generating Reports (Open Data Science)
+
+  - R markdown
+  - Code Chunks
+  - LaTeX
+
+##### Literate Programming (or Open/Reproducible Data Science)
+
+Finally, we note that the interweaving of code and text (often referred to as literate
+programming) may serve two purposes. 
+
+  - The first is to generate a data analysis report by executing code to produce the result. 
+  - The second is to document the code itself, for example, 
+  - - by describing the purpose of a function and all its arguments. 
+  
+  The latter purpose will be discussed with the Roxygen2 package for code documentation.
+
+
+#### What is a Data Analysis
+
+##### Steps in a Data Analysis
+
+  - Define the question
+  - Define the ideal data set
+  - Determine what data you can access
+  - Obtain the data (Open/Available Data first for pilot study)
+  - Clean the data
+  - Exploratory data analysis
+  - Statistical prediction/modeling
+  - Interpret results
+  - Challenge results
+  - Synthesize/write up results
+  - Create reproducible code
+
+##### Open Intro Stats: OI-1 Intro to Data
+
+  - Data basics
+  - Overview of data collection principles
+  - Observational studies and sampling strategies
+  - Experiments
+  - Examining numerical data
+  - Considering categorical data
+
+
+#### THE FOLLOWING TOPICS NOT ON MIDTERM: Inferential Statistics
+
+##### OI-3 Distributions of Random Variables
+
+  - Normal distribution
+  - Evaluating the normal approximation
+  - Geometric distribution
+  - Binomial distribution
+  
+##### OI-4 Foundations of Inference  (Not on Exam)
+
+  - Variability in estimates
+  - Confidence intervals
+  - Hypothesis intervals
+  - Examining the central limit theorem
+  - Inference for other estimators
+  - Sample size and power
+  - Statistical vs. practical significance
+  
+##### So Things to know (Not on Exam)
+
+  - Z values ( # of sd's away from mean)
+  - zstar values
+  - normal probability plots
+  - How to form a hypothesis for hypothesis testing
+  - p values
+  - Type I and II errors
+  - alpha and beta values
+  - census vs. sampling
+  - observational studies, controlled studies
+  - prospective studies and retrospective studies
+  - IQRs interquartile ranks
+  - SE (standard error of an estimate)
+  - SE of the sample mean
+  - population values vs. point estimates: mu vs xbar
+  - Confidence Intervals, 95% CIs
+  
+
+##### Conditions for xbar being nearly normal and SE being accurate (Not on Exam)
+
+Important conditions to help ensure the sampling distribution of x is nearly normal and the estimate of SE sufficiently accurate:
+
+  - The sample observations are independent.
+  - The sample size is large: n = 30 (or n > 30) is a good rule of thumb.
+  - The distribution of sample observations is not strongly skewed.
+
+Additionally, the larger the sample size, 
+  - the more lenient we can be with the sample’s skew.
+
+
+
+
+

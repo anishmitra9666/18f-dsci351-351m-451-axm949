@@ -31,14 +31,15 @@ urlcolor: blue
 #### Reading, Homeworks, Projects, SemProjects
 
   - MidTerm Exam next Thursday October 11th
-    - MidTerm Review in class Tuesday October 9th
+    - MidTerm Review in today
   * Readings: 
     * R4DS 9-16 Data Wrangling for today
   * Homeworks
-    * HW4 given out next Thursday Oct. 12th
-    * Due following Tuesday October 17th
+    * HW4 given out next Thursday Oct. 11th
+    * Due following Tuesday October 16th
+    * HW5 comes Thursday 10/18
   * Data Science Projects: 
-    * 
+    * Project 2 comes on Thursday 10/18
   * 451 SemProjects:  
     * 
   * Friday Comm. Hour
