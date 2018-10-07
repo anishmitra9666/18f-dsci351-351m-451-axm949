@@ -49,6 +49,11 @@ knitr::opts_chunk$set(fig.width=6, fig.height=4.5)
 
 ![DSCI351-451 Syllabus](./figs/syllabus.png)
 
+#### First: Guess The Correlation Game
+
+[Guess The Correlation Game](http://guessthecorrelation.com/)
+
+
 #### Some Tidy Data Analysis Resources
 
 ##### Elements of Data Analytic Style; Jeff Leak

@@ -71,43 +71,46 @@ knitr::opts_chunk$set(echo = TRUE)
   - Geometric: # of trials until success
   - Binomial: P(given # of successes in given # of trials)
 
-##### Normal expectations 
+##### [Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution) expectations 
 
-  - pnorm, gives us the expected probability of a given observed sample value
-  - for a given normal distribution
+  - pnorm, 
+    - gives us the expected probability of a given observed sample value
+    - for a given normal distribution
   
-##### Skewness
+##### [Skewness](https://en.wikipedia.org/wiki/Skewness)
 
   - normal distribution is symmetrical
-  - if you have skewness (real data is "never" normal)
+    - if you have skewness (real data is "never" normal)
   - check if a variable transformation can reduce skewness
-  - if so, then you statitstical analysis will be better
+    - if so, then you statitstical analysis will be better
 
 ##### Convenient measures for normal distributions 
 
   - normalize the mean and standard deviation
-  - using Z scores, so that you can cross-compare sample and population results
+    - using [Z scores,](https://en.wikipedia.org/wiki/Standard_score) 
+    - so that you can cross-compare 
+    - sample and population results
   - and check your normal expectations against your data
   - and
   - All of these normal distribution concepts
-  - Are the foundation of statistical analysis
-  - And of defining statistical significance
-  - You'll be using them in HWs, Projs. and SemProjs.
+    - Are the foundation of statistical analysis
+    - And of defining statistical significance
+    - You'll be using them in HWs, Projs. and SemProjs.
 
 #### Next we'll see the following
 
-##### Central Limit Theorem
+##### [Central Limit Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem)
 
   - -> With Standard Errors (SE) 
   - -> and Confidence Intervals
 
-##### Hypothesis Testing
+##### [Hypothesis Testing](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
 
-  - -> test statistic
-  - -> p values
+  - -> [test statistic](https://en.wikipedia.org/wiki/Test_statistic)
+  - -> [p values](https://en.wikipedia.org/wiki/P-value)
 
 
-##### Trials and Errors
+##### [Trials and Errors](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors#Type_I_error)
 
   - -> Type I errors
   - -> Type II errors

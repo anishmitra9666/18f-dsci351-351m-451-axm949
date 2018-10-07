@@ -35,12 +35,6 @@ knitr::opts_chunk$set(echo = TRUE)
 <!-- Or on a single line like this -->
  
 
-
-#### First: Guess The Correlation Game
-
-[Guess The Correlation Game](http://guessthecorrelation.com/)
-
-
 #### Examine a Data Frame in R with 7 Basic Functions
 
 When one first started learning R, 
