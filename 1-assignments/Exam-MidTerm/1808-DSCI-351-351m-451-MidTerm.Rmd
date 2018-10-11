@@ -203,9 +203,9 @@ agony in data analysis and visualization.
 I will give you a concrete example of some untidy data
 
 ```{r}
-fotr <- read.csv('1708The_Fellowship_Of_The_Ring.csv')
-rotk <- read.csv('1708The_Return_Of_The_King.csv')
-tt <- read.csv('1708The_Two_Towers.csv')
+fotr <- read.csv('1808The_Fellowship_Of_The_Ring.csv')
+rotk <- read.csv('1808The_Return_Of_The_King.csv')
+tt <- read.csv('1808The_Two_Towers.csv')
 
 View(fotr)
 View(rotk)
@@ -250,7 +250,7 @@ orcs, etc.)?
 Answer <- ?
 
 ```{r}
-lotr <- read.csv('1708lotr-tidy.csv')
+lotr <- read.csv('1808lotr-tidy.csv')
 View(lotr)
 ```
 
