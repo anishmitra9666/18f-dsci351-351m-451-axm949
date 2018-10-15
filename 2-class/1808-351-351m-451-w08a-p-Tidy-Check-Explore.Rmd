@@ -29,11 +29,11 @@ knitr::opts_chunk$set(fig.width=6, fig.height=4.5)
     - OIS5 1-4 Numerical Inference for Thursday
   * Homeworks
     * HW4 due today
-    - HW5 in our repo Thursday
+    - HW5 in our repos Thursday
   * Data Science Projects: 
     * 
   * 451 SemProjects:  
-    * 
+    * Project 2 in our repos Thursday
   * Friday Comm. Hour
     * 
 
@@ -49,10 +49,13 @@ knitr::opts_chunk$set(fig.width=6, fig.height=4.5)
 
 ![DSCI351-451 Syllabus](./figs/syllabus.png)
 
+--------------------------
+
 #### First: Guess The Correlation Game
 
-[Guess The Correlation Game](http://guessthecorrelation.com/)
+  -[Guess The Correlation Game](http://guessthecorrelation.com/)
 
+--------------------------
 
 #### Some Tidy Data Analysis Resources
 
@@ -76,16 +79,20 @@ knitr::opts_chunk$set(fig.width=6, fig.height=4.5)
 
   1. Did you specify the type of data analytic question 
   
-    - (e.g. exploration, assocation causality) 
+    - (e.g. exploration, association, causality)
+      - exploration
+      - association
+      - causality
+      - inferential (mechanistic)
     - before touching the data?
   
-So here is another Tukey quote.
+So here is another [John Tukey quote](https://en.wikipedia.org/wiki/John_Tukey).
 
   The data may not contain the answer. 
   
   The combination of some data and an aching desire for an answer 
   
-    - does not ensure that a reasonable answer can be extracted 
+  - does not ensure that a reasonable answer can be extracted 
     - from a given body of data.
 John Tukey
 
@@ -189,6 +196,8 @@ As Ronald Coase said:
 
   - “If you torture the data enough, nature will always confess.”
 
+--------------------------
+
 #### Tidying the data
 
 The point of creating a tidy data set 
@@ -208,7 +217,7 @@ The work of converting the data from raw form
 
 On the other hand, for many data types, 
 
-  0 the processing steps are well documented and standardized.
+  - the processing steps are well documented and standardized.
 
 ##### These are the components of a processed data set:
 
@@ -226,13 +235,16 @@ On the other hand, for many data types,
   5. Did you create a code(data) book?
   6. Did you record all parameters, units, and functions applied to the data?
 
-##### Raw data: It is critical that you include the rawest form of the data that you have access to. 
+##### Raw data: It is critical that you include 
+
+  - the rawest form of the data that you have access to. 
 
 ###### Raw data is relative: 
 
-The raw data will be different to each person that handles the data. 
-
-One person's raw data, may be some previous persons tidy data!
+  - The raw data will be different 
+    - to each person that handles the data. 
+  - One person's raw data, 
+    - may be some previous persons tidy data!
 
 ##### Tidy data: 
   
@@ -248,11 +260,13 @@ Regardless the four general principles you should pay attention to are:
   - Each variable you measure should be in one column
   - Each different observation of that variable should be in different row
   - There should be one table for each “kind” of variable
-  - If you have multiple tables, they should include a column in the table 
+  - If you have multiple tables, 
+    - they should include a column in the table 
     - that allows them to be linked
 
-###### Include a row at the top of each data table/spreadsheet that contains full row names.
+###### Include a row at the top of each data table/spreadsheet 
 
+  - that contains full row names.
   - If you are sharing your data with the collaborator 
   
 ###### They should be shared as csv files, not in Excel
@@ -301,7 +315,11 @@ The ideal thing for you to do when performing summarization
 
 ##### If there is no script, 
  
-be very detailed about parameters, versions, and order of software
+be very detailed about 
+
+  - parameters, 
+  - versions, and 
+  - order of software
 
 ##### Common Mistakes
 
@@ -337,7 +355,6 @@ The checks should be performed on
 
 A useful approach is to think of every possible thing that could go wrong 
 
-
   - and make a plot of the data to check if it did.
 
 ##### How to code variables
@@ -358,7 +375,7 @@ When you put variables into a spreadsheet
 
 ##### Always encode every piece of information about your observations using text.
 
-#####  Identify the missing value indicator
+##### Identify the missing value indicator
 
 There are a number of different ways 
 
@@ -371,7 +388,10 @@ There are a number of different ways
 
 #####  If you have data in multiple files, 
 
-Ensure that data that should be identical across iles is identical
+Ensure that data that 
+
+  - should be identical across files 
+  - is identical
 
 In some cases you will have the same measurements 
 
@@ -400,10 +420,10 @@ Define the units.
   * [Cee-lo Probabilities](https://en.wikipedia.org/wiki/Cee-lo#Probabilities)
   * Rules and probabilities in readings cee-lo.txt
   * Inference (Predicting the Future)
-  
-#### Cee-lo dice game
 
 -------------------------
+  
+#### Cee-lo dice game
 
 ##### Cee-lo without a bank (winner take all)
 
@@ -448,8 +468,6 @@ The combinations are similar to those described above, and can be ranked from be
     - If you roll 1-2-3, you automatically lose.
   * Any other roll is a meaningless combination and 
     - must be rerolled until one of the above combinations occurs.
-
---------------------------
 
 ##### Probabilities[edit]
 
