@@ -1,0 +1,178 @@
+---
+title: 'CWRU DSCI351-451: Semester Project 2- Time Series Analysis'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+<!--
+# Script Name: 1710-dsci351-451-project2.Rmd
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+
+\setcounter{section}{2}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
+
+# Semester Project 2: Time Series Analysis
+
+Time series are a common type of data, 
+
+  - consisting of measurements that are continuous over a time range. 
+
+In this project we will be using classical decomposition 
+
+  - to perform analysis on a time series.
+
+First as an introduciton to decomposition we will have a quick example.
+
+## Problem 1
+
+  - What is the decomposition of a timeseries?
+  - The AirPassangers data set of airline passangers every month for 12 years
+
+```{r}
+library(datasets)
+air <- as.data.frame(AirPassengers)
+```
+
+  - Plot the total time series of air passangers 
+  - What do you notice about the plot?
+
+```{r}
+
+```
+
+  - Use the ts() function in base R 
+    - to define AirPassangers as a time series with a yearly trend 
+  - If the data is taken monthly, 
+    - what will the frequency (points per season) of a yearly season be? 
+
+```{r}
+
+?ts()
+
+```
+
+  - Use the decompose() function 
+    -to demcompose the time series and remove the seasonality
+  - The type for this time series is multiplicative
+  - Plot the decomposed time series, what do you notice about the trend?
+
+```{r}
+
+
+```
+
+  - Isolate the trend and plot the trend on top of the raw data with the seasonality included
+  - How well does the trend represent the data?
+
+```{r}
+
+```
+
+## Problem 2
+
+Now lets try this with a real world time series. 
+We'll be using one month of power and weather data from a solar power plant.
+The data set variables are as follows:
+
+  - time: The timestamp at which the data was taken
+  - ghir: Global Horizontal Irradiance from a sensor at the site, 
+    - the power from the sunlight over an area normal to the surface of the earth $(Watts/m^2)$
+  - iacp: The AC power from the power plant $(kW)$
+  - temp: The air temperature $(Celsius)$
+  - ghi_solargis: The Global Horizontal Irradiance, not from a sensor, 
+    - but predicted using weather modeling $(Watts/m^2)$
+  - clear: A logical indicating whether the sky was "clear" during measurement, 
+    - determined by comparing the ghi and ghi_solargis data
+  - ratio: the ratio of the Global Horizontal Irradiance 
+    - and the Plane of Array Irradiance (the irradiance normal to the surface of a tilted module)
+
+The power from solar panels is dependant on the irradiance hitting it, 
+
+  - so a power reading is often meaningless without a corresponding irradiance measurement.
+
+It is useful to have multiple sources of irradiance measurements. 
+
+Sensors on the ground are useful because 
+
+  - they strongly represent the irradiance that is hitting the module; 
+  - however, sensors can begin to drift if not cleaned or calibrated properly. 
+  - An unstable sensor can render an entire data set useless.
+
+To combat this, we also have irradiance data from SolarGIS, 
+
+  - a company that uses satellite images to model and predict 
+  - the irradiance at the surface of the earth. 
+
+  - Plot the irradiance and power for the first week of data, 
+    - how does the irradiance look compared to 
+      - what you would expect from the trend of sunlight? 
+    - How well does the power and irradiance match up?
+
+```{r}
+
+```
+
+- Use the ts() functions and the stlplus() function from the stlplus package 
+
+  - to decompse the sensor and SolarGIS irradiance and the power 
+    - for the whole month. 
+  -  Plot each of the decompositions, what do you notice?
+
+```{r}
+# think carefully about the frequency you'll need to define for this data
+# what is the seasonal component to this data and how nay data points make up a season?
+# use s.window = "periodic" for the stlplus function
+library(stlplus)
+?stlplus()
+
+```
+
+  - Isolate the trends for the 3 time series you just decomposed 
+    - and build a linear model for each one.
+  - Compare the models to each other, how are they different?
+
+```{r}
+
+```
+
+  - Solar panel degradation leads to less power output over time 
+    - at the same irradiance conditions.
+  - Based on the linear models you found for the trends of power and irradiance, 
+    - is this system degrading over time?
+  - How do the sensor GHI and the SolarGIS GHI compare to power?
+
+
+
+
+
+#### Links
+ 
+http://www.r-project.org 
+
+http://rmarkdown.rstudio.com/  
+
+<!--
+# Keep a complete change log history at bottom of file.
+# Complete Change Log History
+# v0.00.00 - 1405-07 - Nick Wheeler made the blank script
+##########
+
