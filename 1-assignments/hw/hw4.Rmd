@@ -1,0 +1,293 @@
+---
+title: 'CWRU DSCI351-451: Homework 4'
+author: "Prof.:Roger French, TA: JiQi Liu"
+date: "October 11, 2018"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+  html_document:
+    font-size: 10em
+    self_contained: yes
+    toc: yes
+urlcolor: blue
+---
+ 
+<!--
+# Script Name: 1708cwru-dsci351-451-NAME.Rmd
+# Purpose: This is a blank Rmd file to start a new open science data analysis from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+
+\setcounter{section}{1}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(dplyr)
+library(ggplot2)
+```
+## Text Mining of Song Lyrics
+
+- Complete the given problems
+- dplyr, ggplot, and pipelines are highly recommended
+- We will be using the Tidytext package to aid with our text mining
+- The dataset for this assignment is a collection of the information and lyrics from every top 100 billboard song since 1965
+
+### Problem 1
+
+- Load in the data set
+- Print the lyrics of the #4 song from 1988
+- Show the top 20 artists with the most hits, which artist has the most total top 100 hits?
+
+```{r}
+#loaded dataset
+dat <- read.csv('H:/Git/18f-dsci351-351m-451-axm949/billboard_lyrics_1964-2015.csv')
+
+#defined the variable representing the number 4 song from 1998
+lyricsof41998 <- dat%>%
+  filter(Year == 1998)%>%
+  filter(Rank == 4)%>%
+  select(Lyrics)
+
+#printed the lyrics
+print(lyricsof41998)
+
+#I added an artistmod column such that songs by artists featuring other artists have the artist entry shortened to just the original artist
+
+
+dat <- dat%>%
+  mutate(artistmod = sub(" featuring.*$", "", dat$Artist))
+
+
+#I added columns indicating the number of hits by each artist in artistmod and arranged them in descending order of number of hits
+
+dat <- dat%>%
+  group_by(artistmod)%>%
+  mutate(numberofhits = n())%>%
+  ungroup()%>%
+  arrange(desc(numberofhits))
+
+#Finally, I created vectors containing the first 20 unique artistmod values
+top20artists <- dat%>%
+  select(artistmod)%>%
+  unique()%>%
+  slice(1:20)%>%
+  transmute("Top 20 Artists" = artistmod)
+  
+#print the top 20 artists
+print(top20artists)
+
+```
+
+### Problem 2
+
+- Build a histogram of the amount of times artists appear on the top hits billboard, what does the trend look like, what does it suggest about 1 hit wonders?
+It suggests that one hit wonders make it to the list a lot more often than artists that are consistently producing popular music.
+```{r}
+#data frame indicating every artist and their number of top 100 hits
+top20artists <- dat%>%
+  select(artistmod, numberofhits)%>%
+  unique()
+
+#Building the histogram
+ggplot(data = top20artists) + 
+  geom_histogram(binwidth = 1, 
+                 aes(top20artists$numberofhits))
+
+
+```
+
+### Problem 3
+
+- Lets do a lyrical comparison between 2 top artists, Elton John and Eminem
+- First, filter the main data set to only the 2 given artists (you can make them seperate data frames or keep them together, your call)
+- Use the unnest_tokens() function from tidytext to split the lyrics up so that each word has its own row
+- Show the top 10 most commonly used words for each artist
+
+```{r}
+#This data frame contains each word in elton john's lyrics as its own entry, as well as the number of times it occured in the songs. It is listed in descending order.
+topeltonjohnwords <- dat%>%
+  filter(str_detect(artistmod, "elton john"))%>%
+  select(Lyrics)%>%
+  mutate_if(is.factor, as.character)%>%
+  unnest_tokens(word, Lyrics)%>%
+  group_by(word)%>%
+  mutate(count = n())%>%
+  ungroup()%>%
+  unique()%>%
+  arrange(desc(count))
+
+#This data frame contains each word in eminem's lyrics as its own entry, as well as the number of times it occured in the songs. It is listed in descending order.
+topeminemwords <- dat%>%
+  filter(str_detect(artistmod, "eminem"))%>%
+  select(Lyrics)%>%
+  mutate_if(is.factor, as.character)%>%
+  unnest_tokens(word, Lyrics)%>%
+  group_by(word)%>%
+  mutate(count = n())%>%
+  ungroup()%>%
+  unique()%>%
+  arrange(desc(count))
+
+print(topeltonjohnwords%>%slice(1:10))
+print(topeminemwords%>%slice(1:10))
+
+```
+
+- It should be clear that most of these are not significantly meaningful words and should be removed, we can remove them using the stop_words dataframe provided with the tidytext package (hint: look at dplyr anti_join())
+
+- Remove them and show the top ten remaining words for each artist
+
+```{r}
+
+data("stop_words")
+
+topeltonjohnwords <- topeltonjohnwords%>%
+  anti_join(stop_words)
+topeminemwords <- topeminemwords%>%
+  anti_join(stop_words)
+
+print(topeltonjohnwords%>%slice(1:10))
+print(topeminemwords%>%slice(1:10))
+
+
+```
+
+### Problem 4
+
+- Build a word cloud of the lyrics for each atrist, find an R package that will help you with this
+- Compare and contrast the word clouds
+- Did the stop_words dataframe work well to remove non-meaningful words?
+
+```{r}
+
+library(wordcloud)
+#creating word clouds
+eltonJohnWordCloud <- wordcloud::wordcloud(topeltonjohnwords$word, topeltonjohnwords$count)
+eminemWordCloud <- wordcloud::wordcloud(topeminemwords$word, topeminemwords$count)
+
+```
+
+### Problem 5
+
+- The tidytext package gives us the ability to run sentiment analysis as well
+- There are multiple sentiment methods available but let's just use positive and negative sentiment
+
+```{r}
+
+bing <- get_sentiments("bing")
+
+```
+
+- What is the bing dataframe?
+#It's a two column dataframe with words and their connotations respectively.
+- Pull out the "positive" and "negative" words for each artist (hint: dplyr inner_join())
+```{r}
+topeltonjohnwords <- topeltonjohnwords%>%
+  inner_join(bing)
+
+topeminemwords <- topeminemwords%>%
+  inner_join(bing)
+
+```
+- For each song per artist, determine the next positive or negative sentiment, there are several ways to do this - the most straightforward being assign a 1 to a positive lyric and -1 to a negtive lyric then sum them together for each song
+```{r}
+#creates an empty data frame which will be filled with the net sentiment for each song by eminem
+eminemsentiment <- data.frame(Song = dat%>%
+  filter(str_detect(artistmod, "eminem"))%>%
+  select(Song)%>%
+  unique(), 
+  netsentiment = as.numeric(0))
+
+#calculates the net sentiment
+for (i in 1:length(eminemsentiment$Song)) {
+  
+  netsent <- dat%>%
+    filter(str_detect(artistmod, "eminem"))%>%
+    filter(Song == eminemsentiment$Song[i])%>%
+    select(Lyrics)%>%
+    mutate_if(is.factor, as.character)%>%
+    unnest_tokens(word, Lyrics)%>%
+    inner_join(bing)%>%
+    mutate(Rank = ifelse(sentiment == "negative", -1, 1))
+  
+  eminemsentiment$netsentiment[i] <- sum(netsent$Rank)
+}
+
+#creates an empty data frame which will be filled with the net sentiment for each song by elton john
+eltonjohnsentiment <- data.frame(Song =  dat%>%
+  filter(str_detect(artistmod, "elton john"))%>%
+  select(Song)%>%
+  unique(), 
+  netsentiment = as.numeric(0))
+
+#calculates the net sentiment
+for (i in 1:length(eltonjohnsentiment$Song)) {
+  
+  netsent <- dat%>%
+    filter(str_detect(artistmod, "elton john"))%>%
+    filter(Song == eltonjohnsentiment$Song[i])%>%
+    select(Lyrics)%>%
+    mutate_if(is.factor, as.character)%>%
+    unnest_tokens(word, Lyrics)%>%
+    inner_join(bing)%>%
+    mutate(Rank = ifelse(sentiment == "negative", -1, 1))
+  
+  eltonjohnsentiment$netsentiment[i] <- sum(netsent$Rank)
+}
+
+#remove observations with netsentiment of zero which means that the lyrics in the original data frame were NA
+eminemsentiment <- eminemsentiment%>%
+  filter(netsentiment != 0)%>%
+  mutate(ID = ifelse(netsentiment > 0, "positive", "negative"))
+
+eltonjohnSentiment <- eltonjohnsentiment%>%
+  filter(netsentiment != 0)%>%
+  mutate(ID = ifelse(netsentiment > 0, "positive", "negative"))
+```
+- Make a bar plot of the net sentiment of each song for each artist, make these plots high quality as well
+  - Properly name the axes and title each plot
+  - Color by whether the song is overall positive or negative
+  - rotate the x-axis names so long song titles are legible
+  - Arrange the bars in accending or descending order
+```{r}
+
+#bar plot for eminem
+ggplot(data = eminemsentiment) + 
+  geom_bar(stat = "identity",aes(x = reorder(eminemsentiment$Song, eminemsentiment$netsentiment), y = eminemsentiment$netsentiment, fill = ID)) +
+  coord_flip() +
+  ggtitle("Sentiment Analysis on Eminem's Hit Songs") + 
+  xlab("Song Name") + 
+  ylab("Net Sentiment")
+
+#bar plot for elton john
+ggplot(data = eltonjohnsentiment) + 
+  geom_bar(stat = "identity",aes(x = reorder(eltonjohnsentiment$Song, eltonjohnsentiment$netsentiment), y = eltonjohnsentiment$netsentiment, 
+                                 fill = ID)) +
+  coord_flip() + 
+  ggtitle("Sentiment Analysis on Elton John's Hit Songs") + 
+  xlab("Song Name") + 
+  ylab("Net Sentiment")
+```
+
+
+- What differences do you notice between the 2?
+- Based on what you might know about some of these songs, do you think the sentiment analysis gives a good indication of the positive of negative tone for each song or not?
+- If you're interested, play around with this data set, see if your favorite artist is in here and see if you can find anything else
+

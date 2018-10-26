@@ -1,0 +1,464 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+Part 1
+
+All the early steps shown were to create the dataframe which is clean and tidy. 
+
+```{r}
+#This chunk of code is to load and library important packages.
+
+library(tidyverse)
+library(hyperSpec)
+library(ggplot2)
+library(baseline)
+library(netSEM)
+```
+
+
+
+
+```{r}
+#This loads and saves important files into dataframes.
+
+#create vector list of data files
+keyFiles<- list.files(path = "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/", 
+                      pattern = ".csv")
+
+#Loads the color measurements files
+step0colordata <- list.files(path = 
+                             "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step0", 
+                           pattern = ".csv")
+step1colordata <- list.files(path = 
+                             "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step1", 
+                           pattern = ".csv")
+step2colordata <- list.files(path = 
+                             "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step2", 
+                           pattern = ".csv")
+step3colordata <- list.files(path = 
+                             "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step3", 
+                           pattern = ".csv")
+step4colordata <- list.files(path = 
+                             "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step4", 
+                           pattern = ".csv")
+
+#Loads the FTIR measurements files
+step0ftirdata <- list.files(path = 
+                            "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/FTIR/step0", 
+                          pattern = ".csv")
+step1ftirdata <- list.files(path = 
+                            "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/FTIR/step1", 
+                          pattern = ".csv")
+step2ftirdata <- list.files(path = 
+                            "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/FTIR/step2", 
+                          pattern = ".csv")
+step3ftirdata <- list.files(path = 
+                            "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/FTIR/step3", 
+                          pattern = ".csv")
+step4ftirdata <- list.files(path = 
+                            "H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/FTIR/step4", 
+                          pattern = ".csv")
+
+```
+
+
+```{r}
+#This next chunk of code creates indivual exposure hour and sample key data frames.
+
+samplekey <- read.csv("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/acryhc-key.csv")
+
+exposurehours <- read.csv("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/acryhc-exp.csv")
+
+```
+
+
+
+```{r}
+#This chunk of code creates the final data frame, fills it in with data and removes irrelevant data for color.
+
+#Creates the final data frame to be used
+finaldata <- data.frame(NULL)
+
+#Creates empty color values
+colordata <- NULL
+
+
+# This fills in colordata with step 0 color measurements. It is done by reading each file and finally organizing it using rbind.
+for (i in step0colordata) {
+  
+  readdata <- read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step0/", i))%>%
+    cbind("Step" = 0)
+  
+  colordata <- rbind(colordata, readdata)
+  
+}
+
+# Same as before but with step 1 data.
+for (i in step1colordata) {
+  
+  # read each file
+  readdata <- read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step1/", i))%>%
+    cbind("Step" = 1)
+  
+  # rbind data to organize it
+  colordata <- rbind(colordata, readdata)
+  
+}
+
+# Same as before but with step 2 data.
+for (i in step2colordata) {
+  
+  # read each file
+  readdata <- read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step2/", i))%>%
+    cbind("Step" = 2)
+  
+  # rbind data to organize it
+  colordata <- rbind(colordata, readdata)
+  
+}
+
+# Same as before but with step 3 data.
+for (i in step3colordata) {
+  
+  # read each file
+  readdata <- read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step3/", i))%>%
+    cbind("Step" = 3)
+  
+  # rbind data to organize it
+  colordata <- rbind(colordata, readdata)
+  
+}
+
+# Same as before but with step 4 data.
+for (i in step4colordata) {
+  
+  # read each file
+  readdata <- read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/color/step4/", i))%>%
+    cbind("Step" = 4)
+  
+  # rbind data to organize it
+  colordata <- rbind(colordata, readdata)
+  
+}
+
+
+#removes irrelevent data from colordata
+colordata <- transmute(colordata, ID = ID, YI = YI.E313..D65.10., Haze = Haze...D65.10, Step = Step)
+```
+
+
+
+
+
+
+```{r}
+# This dataframe does for FTIR what we just did for color. The data values are offset, normalized, baselined peak values corrected to within 20 above or below the given wavenumber
+# Like before, we first create the dataframe
+ftirdata <-  data.frame("ID" = factor(), 
+             "peak1250" = numeric(), 
+             "peak1700" = numeric(),
+             "peak2900" = numeric(), 
+             "peak3350" = numeric(),
+             "Step" = numeric())
+#Next, we are creating a hyperspec object from the file. This will contain all spectral data for the samples which were present in the file.We load in the data first though.
+readdata <- read.csv("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step0/step0.csv")
+spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+               spc=t(readdata[,-1]),
+               data = data.frame(colnames(readdata[,-1])))
+#Adjusting the wavelength range. Did this to reach appropriate range.
+spectraldata <-  spectraldata[,, 1200 ~ 3500]
+#Corrected the offsets and baseline and wrote down the normalization factor
+offsets <- apply(spectraldata, 1, min)
+spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+normalizationfactor <- 1/max(spectraldata.corrected[,,1680~1720])
+
+# This fills in ftir data with step 0 ftir measurements. It does this by creating a hyperspecobject
+for (i in step0ftirdata) {
+  
+  #Creating a hyperspec object like before.
+  readdata <-    read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step0/",i))
+  spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+                 spc=t(readdata[,-1]),
+                 data = data.frame(colnames(readdata[,-1])))
+  #adjust wavelength range to relevant range. Correcting offsets, writing down normalizing the peak to 1700 and correcting the baseline.
+  spectraldata <-  spectraldata[,, 1200 ~ 3500]
+  offsets <- apply(spectraldata, 1, min)
+  spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+  correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+  spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+  spectraldata.corrected <- sweep(spectraldata.corrected,1,normalizationfactor,"*")
+  
+  #Adding peaks and sample ID to ftirdata  
+  for (j in 1:nrow(spectraldata)){
+    ftirdata <- add_row(ftirdata, 
+            ID = spectraldata.corrected[[j,1]][,1], 
+            peak1250 = max(spectraldata.corrected[j,,1230~1270]), 
+            peak1700 = max(spectraldata.corrected[j,,1680~1720]), 
+            peak2900 = max(spectraldata.corrected[j,,2880~2920]), 
+            peak3350 = max(spectraldata.corrected[j,,3330~3370]),
+            Step = 0
+    )
+  }
+}
+
+# This fills in ftir data with step 1 ftir measurements using the same method as for step 0 ftir measurements.
+for (i in step1ftirdata) {
+  
+  #Creating a hyperspec object like before.
+  readdata <-    read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step1/", i))
+  spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+                 spc=t(readdata[,-1]),
+                 data = data.frame(colnames(readdata[,-1])))
+  #adjusting wavelength range to relevant range. Correcting offsets, writing down normalizing the peak to 1700 and correcting the baseline.
+  spectraldata <-  spectraldata[,, 1200 ~ 3500]
+  offsets <- apply(spectraldata, 1, min)
+  spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+  correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+  spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+  spectraldata.corrected <- sweep(spectraldata.corrected,1,normalizationfactor,"*")
+  
+  #Adding peaks and sample ID to ftirdata  
+  for (j in 1:nrow(spectraldata)){
+    ftirdata <- add_row(ftirdata, 
+            ID = spectraldata.corrected[[j,1]][,1], 
+            peak1250 = max(spectraldata.corrected[j,,1230~1270]), 
+            peak1700 = max(spectraldata.corrected[j,,1680~1720]), 
+            peak2900 = max(spectraldata.corrected[j,,2880~2920]), 
+            peak3350 = max(spectraldata.corrected[j,,3330~3370]),
+            Step = 1
+    )
+  }
+}
+
+
+# This fills in ftir data with step 2 ftir measurements using the same method as for step 0 and step 1 ftir measurements.
+for (i in step2ftirdata) {
+  
+  #Creating a hyperspec object like before.
+  readdata <-    read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step2/", i))
+  spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+                 spc=t(readdata[,-1]),
+                 data = data.frame(colnames(readdata[,-1])))
+  #adjusting wavelength range to relevant range. Correcting offsets, writing down normalizing the peak to 1700 and correcting the baseline.
+  spectraldata <-  spectraldata[,, 1200 ~ 3500]
+  offsets <- apply(spectraldata, 1, min)
+  spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+  correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+  spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+  spectraldata.corrected <- sweep(spectraldata.corrected,1,normalizationfactor,"*")
+  
+  #Adding peaks and sample ID to ftirdata  
+  for (j in 1:nrow(spectraldata)){
+    ftirdata <- add_row(ftirdata, 
+            ID = spectraldata.corrected[[j,1]][,1], 
+            peak1250 = max(spectraldata.corrected[j,,1230~1270]), 
+            peak1700 = max(spectraldata.corrected[j,,1680~1720]), 
+            peak2900 = max(spectraldata.corrected[j,,2880~2920]), 
+            peak3350 = max(spectraldata.corrected[j,,3330~3370]),
+            Step = 2
+    )
+  }
+}
+
+
+# This fills in ftir data with step 3 ftir measurements using the same method as the previous steps.
+for (i in step3ftirdata) {
+  
+  #Creating a hyperspec object like before.
+  readdata <-    read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step3/", i))
+  spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+                 spc=t(readdata[,-1]),
+                 data = data.frame(colnames(readdata[,-1])))
+  #adjusting wavelength range to relevant range. Correcting offsets, writing down normalizing the peak to 1700 and correcting the baseline.
+  spectraldata <-  spectraldata[,, 1200 ~ 3500]
+  offsets <- apply(spectraldata, 1, min)
+  spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+  correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+  spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+  spectraldata.corrected <- sweep(spectraldata.corrected,1,normalizationfactor,"*")
+  
+  #Adding peaks and sample ID to ftirdata  
+  for (j in 1:nrow(spectraldata)){
+    ftirdata <- add_row(ftirdata, 
+            ID = spectraldata.corrected[[j,1]][,1], 
+            peak1250 = max(spectraldata.corrected[j,,1230~1270]), 
+            peak1700 = max(spectraldata.corrected[j,,1680~1720]), 
+            peak2900 = max(spectraldata.corrected[j,,2880~2920]), 
+            peak3350 = max(spectraldata.corrected[j,,3330~3370]),
+            Step = 3
+    )
+  }
+}
+
+# This fills in ftir data with step 4 ftir measurements using the same method as the previous steps.
+for (i in step4ftirdata) {
+  
+  #Creating a hyperspec object like before.
+  readdata <-    read.csv(paste0("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/ftir/step4/", i))
+  spectraldata <- new("hyperSpec", wavelength = readdata[,1],
+                 spc=t(readdata[,-1]),
+                 data = data.frame(colnames(readdata[,-1])))
+  #adjusting wavelength range to relevant range. Correcting offsets, writing down normalizing the peak to 1700 and correcting the baseline.
+  spectraldata <-  spectraldata[,, 1200 ~ 3500]
+  offsets <- apply(spectraldata, 1, min)
+  spectraldata.corrected <- sweep(spectraldata, 1, offsets, "-")
+  correctbaseline <- baseline(spectraldata.corrected[[]], method = "modpolyfit", degree = 4)
+  spectraldata.corrected[[]] <- getCorrected(correctbaseline)
+  spectraldata.corrected <- sweep(spectraldata.corrected,1,normalizationfactor,"*")
+  
+  #Adding peaks and sample ID to ftirdata  
+  for (j in 1:nrow(spectraldata)){
+    ftirdata <- add_row(ftirdata, 
+            ID = spectraldata.corrected[[j,1]][,1], 
+            peak1250 = max(spectraldata.corrected[j,,1230~1270]), 
+            peak1700 = max(spectraldata.corrected[j,,1680~1720]), 
+            peak2900 = max(spectraldata.corrected[j,,2880~2920]), 
+            peak3350 = max(spectraldata.corrected[j,,3330~3370]),
+            Step = 4
+    )
+  }
+}
+
+```
+
+
+```{r}
+#We now turn to cleaning and tidying the dataframe.
+
+#clean dat_color:
+colordata <- colordata%>%
+  filter(nchar(as.character(ID)) == 10)
+
+#clean dat_FTIR
+ftirdata <- ftirdata%>%
+  filter(nchar(as.character(ID)) == 10)
+```
+
+
+
+```{r}
+
+#Finally, we will be assembling our data starting frm the key file with appropriate observations being added to the rows.
+
+finaldata <- samplekey%>%
+  mutate(Haze = as.numeric(NA), 
+         YI = as.numeric(NA),
+         peak1250 = as.numeric(NA), 
+         peak1700 = as.numeric(NA), 
+         peak2900 = as.numeric(NA), 
+         peak3550 = as.numeric(NA), 
+         hours = as.numeric(NA), 
+         dose = as.numeric(NA))
+
+#Next we will make a dose calculator function. It will take exposure and step number as the arguments and return the dose value. It will also convert the exposure argument to a string.
+
+dosecalculator <- function(dataexposurehours, exposure, step){
+  dose <- as.numeric(NA)
+  hours <- as.numeric(NA)
+  dataexposurehours <- read.csv("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj1/AcrylicHardocats/acryhc-exp.csv")
+  #This is for baseline exposure
+  if (exposure == "baseline"){
+    dose = 0
+  }
+  else{#This is for mASTG154 exposure
+    if (exposure == "mASTMG154"){
+      hours = sum(dataexposurehours$mASTG154[c(1:(step+1))])
+      dose = 0.21835*hours
+    }
+    else{#This is for ASTG154 exposure
+      if (exposure == "ASTMG154"){
+        hours = sum(dataexposurehours$ASTMG154[c(1:(step+1))])
+        dose = 0.21835*hours*(2/3)
+      }
+      else{#This is for ASTG155 exposure
+        if (exposure == "ASTMG155"){
+          hours = sum(dataexposurehours$ASTMG155[c(1:(step+1))])
+          dose = 0.09382*hours
+        }
+        else{#This is for HF exposure
+          if (exposure == "HF"){
+            hours = sum(dataexposurehours$HF[c(1:(step+1))])
+            dose = 0
+          }
+          else{#This is for 1x exposure
+            if (exposure == "1x"){
+              hours = sum(dataexposurehours$X1x[c(1:(step+1))])
+              dose = 0.04599*hours
+            }
+            else{#This is for 5x exposure
+              if (exposure == "5x"){
+                hours = sum(dataexposurehours$X5x[c(1:(step+1))])
+              }else{dose = NA}}}}}}}
+  return(dose)
+}
+
+#We can now assemble finaldata from colordata and ftirdata. We do this then add the dose column to our dataframe and finally remove duplicates.
+finaldata <- colordata%>%
+  left_join(ftirdata, by = c("ID","Step"))%>%
+  left_join(select(samplekey, -Step.Number.Retained), by = c("ID" = "Sample.Number"))%>%
+  filter(!is.na(peak1250), !is.na(Product.Name), !is.na(Exposure), !is.na(Step))
+  
+finaldata <- finaldata%>%
+  mutate(Dose = mapply(dosecalculator, exp = Exposure, step = Step))
+
+finaldata <- distinct(finaldata)
+
+write.csv(finaldata, file = "finaldataset.csv")
+```
+#Part 1 - Answers
+
+1) The dimensions are shown below
+
+```{r}
+dim(finaldata)
+```
+
+2) The heads and tails of the data are shown below
+
+
+
+```{r}
+head(finaldata)
+```
+```{r}
+tail(finaldata)
+```
+
+3) The plots are shown below 
+
+```{r}
+ggplot(finaldata%>%filter(Exposure == "1x")) +
+  geom_point(aes(x=Dose,y=YI, colour = Product.Name), size = 4, alpha = 2/3) +
+  geom_smooth(method = lm, aes(x = Dose, y = YI, colour = Product.Name), se = FALSE) +
+  ggtitle("YI vs. Dose for the 1x Exposure")
+ggplot(finaldata%>%filter(Exposure == "1x")) +
+  geom_point(aes(x=Dose,y=Haze, colour = Product.Name), size = 4, alpha = 2/3) +
+  geom_smooth(method = lm, aes(x = Dose, y = Haze, colour = Product.Name), se = FALSE) +
+  ggtitle("Haze vs. Dose for the 1x Exposure")
+```
+
+
+
+
+
+
+
+#Part 2-netSEM(did not have time to make code work on this part)
+1. In structural equation modelining (SEM), a combination of factor analysis and regression is used to analyze how multiple factors correlate. SEM follows a path. Path diagrams like the one shown in the figure explain how measured variables as well as latent factors can have arrows pointing to different factors indicating causal relationships and so on. In figure 1 and in this project, our stressor was irradiance. There were multiple modes of that which irradiance followed. HF and the baseline exposures providedno irradiance exposure to their samples, but ASTMG155, ASTMG154, mASTMG154, 1x, and 5x all consisted of either labroatory conditions or natural conditions for irradiance. The responses were YI or the yellowness index.
+2. I thought mASTMG154 would be the closest to 1x degradation. I thought this because mASTMG154 follows a cyclical period of both light and night periods that resemble a typical day a lot more. mASTMG154 has 8 hours of light and 4 hours of darkness and also the intensity of the mASTMG154 is not very powerful and this makes the ASTMG155 even more natural.
+
+```{r}
+model <- finaldata %>%
+dplyr::filter(Exposure == '1x' ) %>% 
+  dplyr::select((c( Dose , YI , peak1250 , peak1700 , peak2900 , peak3350 ))) %>%
+netSEMm()
+model2 <- finaldata %>%
+dplyr::filter(Exposure == 'mASTMG154' ) %>% 
+  dplyr::select(((c( Dose , YI , peak1250 , peak1700 , peak2900 ,  peak3350 )))) %>% 
+netSEMm()
+
+```
