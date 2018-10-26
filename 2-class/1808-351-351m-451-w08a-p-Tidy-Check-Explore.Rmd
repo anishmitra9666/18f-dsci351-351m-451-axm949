@@ -1,0 +1,491 @@
+---
+title: 'DSCI354-451 Practicum: Question, Tidy, Check, Explore'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+ \setcounter{section}{8}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{2}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width=6, fig.height=4.5) 
+```
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  * Readings: 
+    * OIS4 for today, Foundations of Inference
+    - OIS5 1-4 Numerical Inference for Thursday
+  * Homeworks
+    * HW4 due today
+    - HW5 in our repos Thursday
+  * Data Science Projects: 
+    * 
+  * 451 SemProjects:  
+    * Project 2 in our repos Thursday
+  * Friday Comm. Hour
+    * 
+
+#### Textbooks
+
+  - [Peng: R Programming for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=F1mVHgAAAEAJ&pg=GBS.PA1)
+  - [Peng: Exploratory Data Analysis with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=R-09BgAAAEAJ&pg=GBS.PA1)
+  - [Open Intro Stats, v3](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=G2EOBwAAAEAJ&pg=GBS.PA0)
+  - [Wickham: R for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=I6y3DQAAQBAJ&pg=GBS.PA1)
+  - [Hastie: Intro to Statistical Learning with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=KtuPCwAAAEAJ&pg=GBS.PA0)
+  
+#### Syllabus
+
+![DSCI351-451 Syllabus](./figs/syllabus.png)
+
+--------------------------
+
+#### First: Guess The Correlation Game
+
+  -[Guess The Correlation Game](http://guessthecorrelation.com/)
+
+--------------------------
+
+#### Some Tidy Data Analysis Resources
+
+##### Elements of Data Analytic Style; Jeff Leak
+
+  - https://leanpub.com/datastyle
+  
+##### R for Data Science
+
+  - By Garrett Grolemund, Hadley Wickham
+  - http://r4ds.had.co.nz/
+
+##### What is Tidy Data
+
+  - A Wickham paper in your readings subdirectory
+  - http://vita.had.co.nz/papers/tidy-data.pdf
+
+#### Data Analysis Question, Tidying, Checking, Exploratory Data Analysis
+
+##### Answering the question
+
+  1. Did you specify the type of data analytic question 
+  
+    - (e.g. exploration, association, causality)
+      - exploration
+      - association
+      - causality
+      - inferential (mechanistic)
+    - before touching the data?
+  
+So here is another [John Tukey quote](https://en.wikipedia.org/wiki/John_Tukey).
+
+  The data may not contain the answer. 
+  
+  The combination of some data and an aching desire for an answer 
+  
+  - does not ensure that a reasonable answer can be extracted 
+    - from a given body of data.
+John Tukey
+
+##### The Data Analysis Flow Chart
+
+![the da question flow chart](figs/9b-1.png)
+
+  1. Types of Data Analyses
+
+  - Descriptive: 
+    - A descriptive data analysis seeks to summarize the measurements 
+    - in a single data set without further interpretation. 
+  - Exploratory: 
+    - An exploratory data analysis builds on a descriptive analysis 
+    - by searching for discoveries, trends, correlations, 
+    - or relationships between the measurements of multiple variables 
+      - to generate ideas or hypotheses. 
+  - Inferential: 
+    - An inferential data analysis goes beyond an exploratory analysis 
+    - by quantifying whether an observed pattern will likely hold 
+      - beyond the data set in hand. 
+    - Inferential data analyses are the most common statistical analysis 
+      - in the formal scientific literature. 
+  - Predictive: 
+    - While an inferential data analysis quantifies 
+    -   The relationships among measurements at population-scale, 
+    -  a predictive data analysis uses a subset of measurements (the features) 
+      - to predict another measurement (the outcome) on a single person or unit. 
+  - Causal: 
+    - A causal data analysis seeks to find out what happens to one measurement 
+    - if you make another measurement change. 
+  - Mechanistic: 
+    - Causal data analyses seek to identify average effects 
+      - between often noisy variables. 
+    - For example, decades of data 
+      - show a clear causal relationship between smoking and cancer. 
+  
+  2. Did you define the metric for success before beginning?
+  3. Did you understand the context for the question and the scientific or business application?
+  4. Did you record the experimental design?
+  5. Did you consider whether the question could be answered with the available data?
+
+##### Common Mistakes
+
+  - Correlation does not imply causation: 
+    - Interpreting an inferential analysis as causal.
+
+Most data analyses involve inference or prediction. 
+
+  - Unless a randomized study is performed, 
+  - it is difficult to infer from The data analytic question 
+  - if there is a relationship between two variables. 
+
+A great website to hunt for spurious correlations is 
+
+  - [http://tylervigen.com](http://tylervigen.com ) 
+
+![spurious correlations ](figs/9b-2.png)
+
+Particular caution should be used when applying words 
+
+  - such as “cause” and “effect” when performing inferential analysis. 
+
+Inference is not about causation; its infering relationships between variables. 
+
+  - Overfitting: Interpreting an exploratory analysis as predictive
+  
+A common mistake is to use a single, unsplit data set 
+
+  - for both model building and testing. 
+  - If you apply a predictive model 
+    - to the same data set used to build the model 
+    - you can only estimate “resubstitution error” or “training set error”. 
+  -  These estimates are very optimistic (Not Good) estimates of the error 
+    - you would get if using the model in practice. 
+
+If you try enough models on the same set of data, 
+
+  - you eventually can predict perfectly.
+  - but this is useless
+
+For a predictive model; 
+
+  - you need to split your data into training and test datasets, 
+  -   and evaluate how well it predicts the test dataset.
+  - n of 1 analysis: Descriptive versus inferential analysis. 
+
+When you have a very small sample size, 
+
+  - it is often impossible to explore the data, 
+    - let alone make inference to a larger population. 
+  - Data dredging: Interpreting an exploratory analysis as inferential
+  
+Similar to the idea of overfitting, 
+
+  - if you fit a large number of models to a data set, 
+    - it is generally possible to identify at least one model 
+    - that will fit the observed data very well. 
+
+As Ronald Coase said: 
+
+  - “If you torture the data enough, nature will always confess.”
+
+--------------------------
+
+#### Tidying the data
+
+The point of creating a tidy data set 
+
+  - is to get the data into a format 
+    - that can be easily shared, computed on, and analyzed.
+  - The components of a data set: 
+  
+The work of converting the data from raw form 
+
+  - to directly analyzable form 
+    - is the first step of any data analysis. 
+  - It is important to see the raw data, 
+    - understand the steps in the data processing pipeline, 
+    - and be able to incorporate hidden sources of variability 
+    - in one’s data analysis. 
+
+On the other hand, for many data types, 
+
+  - the processing steps are well documented and standardized.
+
+##### These are the components of a processed data set:
+
+  - The raw data.
+  - A tidy data set.
+  - A code(data) book describing each variable 
+    - and its values in the tidy data set.
+  - An explicit and exact recipe you used 
+    - to go from raw to tidy and a databook.
+
+  1. Is each variable one column?
+  2. Is each observation one row?
+  3. Do different data types appear in each table?
+  4. Did you record the recipe for moving from raw to tidy data?
+  5. Did you create a code(data) book?
+  6. Did you record all parameters, units, and functions applied to the data?
+
+##### Raw data: It is critical that you include 
+
+  - the rawest form of the data that you have access to. 
+
+###### Raw data is relative: 
+
+  - The raw data will be different 
+    - to each person that handles the data. 
+  - One person's raw data, 
+    - may be some previous persons tidy data!
+
+##### Tidy data: 
+  
+The general principles of tidy data are laid out by Hadley Wickham in 
+
+  - this paper [http://vita.had.co.nz/papers/tidy-data.pdf](http://vita.had.co.nz/papers/tidy-data.pdf)
+  - and this video [https://vimeo.com/33727555](https://vimeo.com/33727555). 
+  
+The paper and the video are both focused on the tidyverse R packages. 
+
+Regardless the four general principles you should pay attention to are: 
+
+  - Each variable you measure should be in one column
+  - Each different observation of that variable should be in different row
+  - There should be one table for each “kind” of variable
+  - If you have multiple tables, 
+    - they should include a column in the table 
+    - that allows them to be linked
+
+###### Include a row at the top of each data table/spreadsheet 
+
+  - that contains full row names.
+  - If you are sharing your data with the collaborator 
+  
+###### They should be shared as csv files, not in Excel
+
+Since Excel files can have buried macros, 
+
+  - you lost control of the data analysis process.
+  
+Also one csv table per file, no workbooks
+
+  - No highligting cells.
+  - csv files are for data only; no code.  
+  - or one Excel file per table.
+    - but xls or xlsx files are binary and fragile
+    - ascii csv files are more robust
+
+##### The code (or data) book: 
+
+The measurements you calculate 
+
+  - will need to be described in more detail 
+  - than you will sneak into the spreadsheet. 
+  
+The code book contains this information. 
+
+At minimum it should contain:
+
+- Information about the variables (including units!) 
+  - in the data set not contained in the tidy data
+  - Information about the summary choices you made
+  - Information about the experimental study design you used
+
+##### The instruction list or script must be explicit
+
+You may have heard this before, 
+
+  - but reproducibility is kind of a big deal in computational science.
+
+##### The ideal instruction list is a script
+
+The ideal thing for you to do when performing summarization 
+
+  - is to create a computer script (in R, Python, or something else) 
+  - that takes the raw data as input 
+    - and produces the tidy data you are sharing as output. 
+
+##### If there is no script, 
+ 
+be very detailed about 
+
+  - parameters, 
+  - versions, and 
+  - order of software
+
+##### Common Mistakes
+
+  - Combining multiple variables into a single column
+  - Merging unrelated data into a single file
+  - An instruction list that isn’t explicit
+  
+#### Checking the data
+
+  1. Did you plot univariate and multivariate summaries of the data?
+  2. Did you check for outliers?
+  3. Did you identify the missing data code?
+  
+Data munging or processing is required 
+
+  - for basically every data set that you will have access to. 
+
+Even when the data are neatly formatted 
+
+  - like you get from open data sources like [http://Data.gov](http://Data.gov) 
+  - you’ll frequently need to do things that make it 
+    - slightly easier to analyze or use the data for modeling. 
+
+The first thing to do with any new data set is 
+
+  - to understand the quirks of the data set and potential errors. 
+  
+This is usually done with a set of standard summary measures. 
+
+The checks should be performed on 
+
+  - the rawest version of the data set you ave available. 
+
+A useful approach is to think of every possible thing that could go wrong 
+
+  - and make a plot of the data to check if it did.
+
+##### How to code variables
+
+When you put variables into a spreadsheet 
+
+  - there are several main categories you will run into 
+    - depending on their data type:
+  - Continuous
+  - Ordinal
+  - Categorical
+  - Missing
+  - Censored
+
+#####  In the code book you should explain why censored values are missing.
+
+##### Avoid coding categorical or ordinal variables as numbers.
+
+##### Always encode every piece of information about your observations using text.
+
+##### Identify the missing value indicator
+
+There are a number of different ways 
+
+  - that missing values can be encoded in data sets. 
+  - The common choices are “NA”. Don't use numbers.
+
+##### Check for clear coding errors
+
+##### Check for label switching
+
+#####  If you have data in multiple files, 
+
+Ensure that data that 
+
+  - should be identical across files 
+  - is identical
+
+In some cases you will have the same measurements 
+
+  - recorded twice.
+
+You should check that for each patient 
+
+  - in the two files the sex is recorded the same.
+  - This is part of data validation.
+
+#####  Check the units (or lack of units)
+
+Define the units.
+
+##### Common Mistakes
+
+  - Failing to check the data at all
+  - Encoding factors as quantitative numbers
+  - Not making sufficient plots
+  - Failing to look for outliers or missing values
+  
+  
+#### Cee-lo a good, no house advantage game
+
+  * [Cee-lo Dice Game](https://en.wikipedia.org/wiki/Cee-lo#Cee-lo_without_a_bank_.28winner_take_all.29)
+  * [Cee-lo Probabilities](https://en.wikipedia.org/wiki/Cee-lo#Probabilities)
+  * Rules and probabilities in readings cee-lo.txt
+  * Inference (Predicting the Future)
+
+-------------------------
+  
+#### Cee-lo dice game
+
+##### Cee-lo without a bank (winner take all)
+
+  In this version of the game, 
+  
+  - each round involves two or more players of equal status. 
+  
+  A bet amount is agreed upon and 
+  
+  - each player puts that amount in the pile or pot. 
+    
+  Each player then has to roll all three dice at once and 
+  
+  - must continue until a recognized combination is rolled. 
+  
+  Whichever player rolls the best combination 
+  
+  - wins the entire pot, and a new round begins. 
+    
+  In cases where two or more players tie for the best combination, 
+  
+  - they must have a shoot out to determine a single winner.
+
+##### The combinations in Cee-lo
+
+The combinations are similar to those described above, and can be ranked from best to worst as:
+
+  * 4-5-6 
+    - The highest possible roll. If you roll 4-5-6, you automatically win.
+  * Trips 
+    - Rolling three of the same number is known as rolling "trips". 
+    - Higher trips beat lower trips, 
+      - so 4-4-4 is better than   * 3-3-3. 
+      - Any trips beats any established point.
+  * Point 
+    * Rolling a pair, and another number, 
+      - establishes the singleton as a "point". 
+    - A higher point beats a lower point, 
+      - so 2-2-6 is better than 5-5-2.
+  * 1-2-3
+    * The lowest possible roll. 
+    - If you roll 1-2-3, you automatically lose.
+  * Any other roll is a meaningless combination and 
+    - must be rerolled until one of the above combinations occurs.
+
+##### Probabilities[edit]
+
+  * With three six-sided dice there are 6 × 6 × 6 or 216 possible permutations.
+    * 4-5-6: 6/216 = 2.777777778% (Automatic Win)
+    * Trips: 6/216 = 2.777777778%
+    * Point: 90/216 = 41.66666667%
+    * 1-2-3: 6/216 = 2.777777778% (Automatic Loss)
+    * Meaningless permutations: 108/216 = 50%
+
+##### dice, an R package to calculate dice games
+
+[dice](https://CRAN.R-project.org/package=dice)
+
+##### [Rolling the Dice on a Warm Night](http://www.nytimes.com/2009/08/16/nyregion/16ritual.html?_r=0)
+
+  * Human mystical thinking
+  * And beware the bank
+
+
+

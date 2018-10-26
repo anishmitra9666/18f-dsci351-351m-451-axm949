@@ -1,0 +1,348 @@
+---
+title: 'CWRU DSCI351-451: Predictive Analytics'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+bibliography: refs.bib
+---
+ 
+ \setcounter{section}{9}
+ \setcounter{subsection}{2}
+ \setcounter{subsubsection}{0}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2016
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+
+<!-- Or on a single line like this -->
+ 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
+```
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  * Readings: 
+    * OIS 6.1-2 for today 10/25/2018
+    * OIS 7 for next Tuesday 10/30/2018
+  * Homeworks
+    * HW5 Inference due Tuesday 10/30/2018
+  * Data Science Projects: 
+    * Project 2 Time Series Analysis due Thursday 11/1/2017
+  * 451 SemProjects:  
+    * SemProjects Report Out #2, in class, Tuesday 10/30/2018
+  * Friday Comm. Hour
+    * 
+
+#### Textbooks
+
+  - [Peng: R Programming for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=F1mVHgAAAEAJ&pg=GBS.PA1)
+  - [Peng: Exploratory Data Analysis with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=R-09BgAAAEAJ&pg=GBS.PA1)
+  - [Open Intro Stats, v3](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=G2EOBwAAAEAJ&pg=GBS.PA0)
+  - [Wickham: R for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=I6y3DQAAQBAJ&pg=GBS.PA1)
+  - [Hastie: Intro to Statistical Learning with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=KtuPCwAAAEAJ&pg=GBS.PA0)
+  
+#### Syllabus
+
+![DSCI351-451 Syllabus](./figs/syllabus.png)
+#### MidTerm Results
+
+In Canvas Grades, the "Total" column is in %
+
+  - DSCI 351 graded out of 100 points
+    - 35 points done through the MidTerm
+  - DSCI 451 graded out of 140 points
+    - 45 points done through the MidTerm
+    - SemProj is 40 points total
+
+##### MidTerm DSCI 351, 351M Grades
+
+Out of 40 points
+
+  - A > 91 %, 32 points
+  - B > 80%, 28 points
+  - C < 80%, 28 points
+
+##### MidTerm DSCI 451 Grades
+
+Out of 50 points
+
+  - A > 89%, 40 points
+  - B > 80%, 36 points
+  - C < 80%, 36 points
+
+#### SemProj Report Out 2, next Tuesday 10/31/2017 in class
+
+  - Submit your report Rmd, pdf and/or Rpres to the Assignment page on Canvas
+  - 8 minutes presentation
+  - We'll have DSCI 352/452 also present
+
+##### Basic steps we use to construct a data analysis.
+
+Modified from Jeff Leek’s slides 
+
+  * ( available in your repo in 17f-dsci351-451-prof/3-readings/ )
+
+##### SemProj. Part a) Define Question
+
+  * Background on the research area and critical issues
+  * Define the question
+  * Define the ideal data set
+  * Determine what data you can access
+  * Define critical capabilities and identify packages you will draw upon
+  * Obtain the data, define you target data structure
+  * Clean and tidy the data
+
+##### SemProj Part b) Cleaning and EDA
+
+  * Write you databook, defining variables, units and data structures
+  * Data visualization and exploratory data analysis
+  * Observations of trends and functional forms
+  * Power transformations
+  * Validate with reference to domain knowledge
+  * Evaluate the types of Modeling Approaches to take
+
+##### SemProj Part c) Modeling and Statistical Learning
+
+  * Types of modeling to try
+  * Statistical prediction/modeling
+  * Model selection
+  * Cross-validation, Predictive R2
+  * Interpret results
+  * Challenge results
+
+##### SemProj Part d) Present your final models and learnings
+
+  * Present your results
+  * Present reproducible code
+  * Comparison to other modeling approaches in the literature
+
+#### Supervised and Unsupervised Learning
+
+Two broad families of algorithms will be covered: 
+
+  * Unsupervised learning algorithms
+  * Supervised learning algorithms
+
+##### Unsupervised learning 
+
+In unsupervised learning, 
+
+  - the algorithm will seek to find the structure that organizes unlabelled data. 
+
+##### Supervised learning 
+
+In supervised learning, 
+
+  - we know the class or the level of some observations of a given target attribute. 
+
+#### Classification and Regression Problems
+
+There are basically two types of problems that predictive modeling deals with: 
+
+  * Classification problems 
+  * Regression problems
+
+##### Classification
+
+In some cases, we want to predict which group an observation is part of. 
+
+Here, we are dealing with a quality of the observation. 
+
+##### Regression
+
+In other cases, we want to predict an observation's level on an attribute. 
+
+Here, we are dealing with a quantity, and this is a regression problem. 
+
+#### The critical role of domain knowledge 
+
+  * in modeling and prediction
+
+Domain knowledge informs and is informed by data understanding. 
+
+  * The understanding of the data 
+    - then informs how the data has to be prepared. 
+
+The next step is data modeling, 
+
+  * which can also lead to further data preparation. 
+
+Data models have to be evaluated, 
+
+  * and this evaluation can be informed by field knowledge, 
+    - which is also updated through the data mining process. 
+
+Finally, 
+
+  * if the evaluation is satisfactory, 
+    - the models are deployed for prediction. 
+
+
+#### Caveat: For Predictive Analytics
+
+Of course, predictions are not always accurate, 
+
+  * and some have written about the caveats of data science. 
+
+What do you think about the relationship between 
+
+  * the attributes titled Predictor and Outcome on the following plot? 
+
+![Relationship between Predictor & Outcome](./figs/lpar-caveat.png)
+
+
+It seems like there is a relationship between the two. 
+
+  * For the statistically inclined, 
+      - I tested its significance:
+        - r = 0.4195, p = .0024. 
+  * The value p is the probability of obtaining a relationship of this strength or stronger 
+      - if there is actually no relationship between the attributes. 
+  * ( This is the p-value of hypothesis testing, if p<0.05 
+      - typically we assert we can reject the null hypothesis)
+  * We could conclude that the relationship between these variables 
+      - in the population they come from is quite reliable, 
+      - **right?**
+    
+##### No: Lets think about this
+
+Believe it or not, 
+
+  * the population these observations come from 
+      - is that of randomly generated numbers. 
+  * We generated a data frame of 50 columns 
+      - of 50 randomly generated numbers. 
+  * We then examined all the correlations (manually) 
+      - and generated a scatterplot of the two attributes 
+      - with the largest correlation we found. 
+    
+##### The code is provided here, 
+
+We'll use runif()
+
+  * help(runif)
+    - The Uniform Distribution
+    - Description
+    - These functions provide information about the uniform distribution on the interval from min to max. 
+      - dunif gives the density, 
+      - punif gives the distribution function 
+      - qunif gives the quantile function and 
+      - runif generates random deviates.
+
+```{r,echo=TRUE}
+set.seed(1)
+DF = data.frame(matrix(nrow = 50,ncol = 50))
+for (i in 1:50) {
+  DF[,i] = runif(50)
+}
+
+plot(DF[[2]],DF[[16]], xlab = "Predictor", ylab = "Outcome")
+abline(lm(DF[[2]]~DF[[16]]))
+cor.test(DF[[2]], DF[[16]])
+
+```
+
+  * in case you want to check it yourself
+  - line 1 sets the seed so that you find the same results as we did, 
+  - line 2 generates to the data frame, 
+  - line 3-5 the for loop fills it with random numbers, column by column, 
+  - line 7 generates the scatterplot, 
+  - line 8 fits the regression line, and 
+  - line 9 tests the significance of the correlation:
+
+Normally we reject the null with a p-value of <0.05
+
+  * i.e. we'll be wrong 5% of the time
+    - in a set of 20 trials
+  
+Here we did 50 trials
+
+  * And cherry picked the best correlation
+    - But its all randomly generated numbers
+    - There is no predictive or causal relationship
+  * And we'd only recognize this if we consider
+    - That our p-value is reported for 1 trial
+    - But we run many trials
+
+##### [Bonferroni Correction](https://en.wikipedia.org/wiki/Bonferroni_correction) for multiple comparisons
+
+How could this relationship happen given that the odds were 2.4 in 1000 ? 
+
+  * Well, think of it; 
+    - we correlated all 50 attributes 2 x 2, 
+    - which resulted in 2,450 tests 
+      - (not considering the correlation of each attribute with itself). 
+  * Such spurious correlation was quite expectable. 
+
+The usual threshold below which we consider a relationship significant is p = 0.05. 
+
+  * This means that we expect to be wrong once in 20 times.
+  * You would be right to suspect that there are other significant correlations 
+    - in the generated data frame (there should be approximately 125 of them in total). 
+  * This is the reason why we should always correct the number of tests. 
+  * In our example, 
+    - as we performed 2,450 tests, 
+    - our threshold for significance 
+    - should be 0.0000204 (0.05 / 2450).
+  * This is called the Bonferroni correction.
+
+#### Overfitting: The need for Training and Testing Datasets
+
+Spurious correlations are always a possibility in data analysis 
+
+  * and this should be kept in mind at all times. 
+
+A related concept is that of overfitting. 
+
+  * Overfitting happens, for instance, 
+    - when a weak classifier bases its prediction on the noise in data. 
+  * We will discuss overfitting when discussing
+    - Training datasets for fit a model to
+    - Testing datasets for evaluating the goodness of fit
+      - when using various types of cross-validation
+    - And when evaluating $Predictive, Adjusted, R^2$
+    
+#### Lets get some basic ideas for background
+
+  - [Standard Error](https://en.wikipedia.org/wiki/Standard_error)
+  - [Margin of Error](https://en.wikipedia.org/wiki/Margin_of_error)
+  - [Z score](https://en.wikipedia.org/wiki/Standard_score)
+    - [Used in Z-test](https://en.wikipedia.org/wiki/Z-test)
+    - [The analog of Students t-test](https://en.wikipedia.org/wiki/Student%27s_t-test)
+  - [$Adjusted R^2$](https://en.wikipedia.org/wiki/Coefficient_of_determination)
+  - [PRESS, predicted residual error sum of squares statistic](https://en.wikipedia.org/wiki/PRESS_statistic)
+
+#### Dice statistics
+
+  - [Weldon's Dice](https://en.wikipedia.org/wiki/Raphael_Weldon#Weldon's_dice)
+    - [Weldon's Dice Automated](https://link.springer.com/article/10.1007%2Fs00144-009-0036-8)
+    - Weldon's Dice Revisited, In readings Kemp and Kemp - 1991 - Weldon's Dice Data Revisited.pdf
+  - [Reproducing Weldon's Dice Experiment](http:// www.youtube.com/
+watch?v=95EErdouO2w)
+  - [Fair Dice (Part 2) - Numberphile](https://www.youtube.com/watch?v=8UUPlImm0dM)
+
+#### Citations
+
+* R Core Team. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing, 2014. http://www.R-project.org/.
+* Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. 1st ed. 2013, Corr. 5th printing 2015 edition. Springer Texts in Statistics. New York: Springer, 2013.
+* Diez, David M., Christopher D. Barr, and Mine Çetinkaya-Rundel. OpenIntro Statistics: Third Edition. 3 edition. S.l.: OpenIntro, Inc., 2015.
+* Mayor, Eric. Learning Predictive Analytics with R. Packt Publishing - ebooks Account, 2015.
+

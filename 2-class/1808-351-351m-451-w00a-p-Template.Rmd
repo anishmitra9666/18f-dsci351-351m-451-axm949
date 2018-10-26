@@ -11,6 +11,7 @@ output:
   html_document:
     toc: yes
 urlcolor: blue
+bibliography: refs.bib
 ---
 
  \setcounter{section}{1}
@@ -64,6 +65,12 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5)
 #### Syllabus
 
 ![DSCI353-453 Syllabus](./figs/syllabus.png)
+
+#### Links
+
+
+
+#### References
 
 
 

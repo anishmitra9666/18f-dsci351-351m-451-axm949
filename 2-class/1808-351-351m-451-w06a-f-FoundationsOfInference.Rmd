@@ -71,119 +71,50 @@ knitr::opts_chunk$set(echo = TRUE)
   - Geometric: # of trials until success
   - Binomial: P(given # of successes in given # of trials)
 
-##### Normal expectations 
+##### [Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution) expectations 
 
-  - pnorm, gives us the expected probability of a given observed sample value
-  - for a given normal distribution
+  - pnorm, 
+    - gives us the expected probability of a given observed sample value
+    - for a given normal distribution
   
-##### Skewness
+##### [Skewness](https://en.wikipedia.org/wiki/Skewness)
 
   - normal distribution is symmetrical
-  - if you have skewness (real data is "never" normal)
+    - if you have skewness (real data is "never" normal)
   - check if a variable transformation can reduce skewness
-  - if so, then you statitstical analysis will be better
+    - if so, then you statitstical analysis will be better
 
 ##### Convenient measures for normal distributions 
 
   - normalize the mean and standard deviation
-  - using Z scores, so that you can cross-compare sample and population results
+    - using [Z scores,](https://en.wikipedia.org/wiki/Standard_score) 
+    - so that you can cross-compare 
+    - sample and population results
   - and check your normal expectations against your data
   - and
   - All of these normal distribution concepts
-  - Are the foundation of statistical analysis
-  - And of defining statistical significance
-  - You'll be using them in HWs, Projs. and SemProjs.
+    - Are the foundation of statistical analysis
+    - And of defining statistical significance
+    - You'll be using them in HWs, Projs. and SemProjs.
 
 #### Next we'll see the following
 
-##### Central Limit Theorem
+##### [Central Limit Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem)
 
   - -> With Standard Errors (SE) 
   - -> and Confidence Intervals
 
-##### Hypothesis Testing
+##### [Hypothesis Testing](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
 
-  - -> test statistic
-  - -> p values
+  - -> [test statistic](https://en.wikipedia.org/wiki/Test_statistic)
+  - -> [p values](https://en.wikipedia.org/wiki/P-value)
 
 
-##### Trials and Errors
+##### [Trials and Errors](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors#Type_I_error)
 
   - -> Type I errors
   - -> Type II errors
   
-#### Cee-lo a good, no house advantage game
-
-  * [Cee-lo Dice Game](https://en.wikipedia.org/wiki/Cee-lo#Cee-lo_without_a_bank_.28winner_take_all.29)
-  * [Cee-lo Probabilities](https://en.wikipedia.org/wiki/Cee-lo#Probabilities)
-  * Rules and probabilities in readings cee-lo.txt
-  * Inference (Predicting the Future)
-  
-#### Cee-lo dice game
-
--------------------------
-
-##### Cee-lo without a bank (winner take all)
-
-  In this version of the game, 
-  
-  - each round involves two or more players of equal status. 
-  
-  A bet amount is agreed upon and 
-  
-  - each player puts that amount in the pile or pot. 
-    
-  Each player then has to roll all three dice at once and 
-  
-  - must continue until a recognized combination is rolled. 
-  
-  Whichever player rolls the best combination 
-  
-  - wins the entire pot, and a new round begins. 
-    
-  In cases where two or more players tie for the best combination, 
-  
-  - they must have a shoot out to determine a single winner.
-
-##### The combinations in Cee-lo
-
-The combinations are similar to those described above, and can be ranked from best to worst as:
-
-  * 4-5-6 
-    - The highest possible roll. If you roll 4-5-6, you automatically win.
-  * Trips 
-    - Rolling three of the same number is known as rolling "trips". 
-    - Higher trips beat lower trips, 
-      - so 4-4-4 is better than   * 3-3-3. 
-      - Any trips beats any established point.
-  * Point 
-    * Rolling a pair, and another number, 
-      - establishes the singleton as a "point". 
-    - A higher point beats a lower point, 
-      - so 2-2-6 is better than 5-5-2.
-  * 1-2-3
-    * The lowest possible roll. 
-    - If you roll 1-2-3, you automatically lose.
-  * Any other roll is a meaningless combination and 
-    - must be rerolled until one of the above combinations occurs.
-
---------------------------
-
-#####Probabilities[edit]
-
-  * With three six-sided dice there are 6 × 6 × 6 or 216 possible permutations.
-    * 4-5-6: 6/216 = 2.777777778% (Automatic Win)
-    * Trips: 6/216 = 2.777777778%
-    * Point: 90/216 = 41.66666667%
-    * 1-2-3: 6/216 = 2.777777778% (Automatic Loss)
-    * Meaningless permutations: 108/216 = 50%
-
-##### [Rolling the Dice on a Warm Night](http://www.nytimes.com/2009/08/16/nyregion/16ritual.html?_r=0)
-
-  * Human mystical thinking
-  * And beware the bank
-
-
 #### Links
 
 
