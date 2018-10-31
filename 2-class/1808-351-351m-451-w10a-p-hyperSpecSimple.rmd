@@ -44,6 +44,7 @@ output: ioslides_presentation
 
 #hyperSpec Examples
 ```{r, echo=FALSE}
+library(dplyr)
 library(hyperSpec)
 ```
 
@@ -68,26 +69,26 @@ plotspc(step0)
 
 ## Multiple .spc Files?
 
-- (Purposefully without a loop)
+- (Purposefully without a loop or apply)
 ```{r}
 # Read multiple .spc files
 
-setwd("./data/corrected_pet_unstab_cyclic_quv_ex320/")
-curfile <- "./sa19603_00_ex320.spc"
+#setwd("./data/pet_unstab_cyclic_quv_ex320/")
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_00_ex320.spc"
 step0 <- read.spc(curfile)
-curfile <- "./sa19603_22_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_22_ex320.spc"
 step1 <- read.spc(curfile)
-curfile <- "./sa19603_23_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_23_ex320.spc"
 step2 <- read.spc(curfile)
-curfile <- "./sa19603_24_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_24_ex320.spc"
 step3 <- read.spc(curfile)
-curfile <- "./sa19603_25_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_25_ex320.spc"
 step4 <- read.spc(curfile)
-curfile <- "./sa19603_26_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_26_ex320.spc"
 step5 <- read.spc(curfile)
-curfile <- "./sa19603_27_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_27_ex320.spc"
 step6 <- read.spc(curfile) 
-curfile <- "./sa19603_28_ex320.spc"
+curfile <- "./data/pet_unstab_cyclic_quv/sa19603_28_ex320.spc"
 step7 <- read.spc(curfile)
 ```
 
@@ -96,7 +97,7 @@ step7 <- read.spc(curfile)
 ```{r}
 # Use Collpase to combine spectra
 
-spec <- collapse(step0, step1, step2, step3, step4, step5, step6, step7)
+spec <- hyperSpec::collapse(step0, step1, step2, step3, step4, step5, step6, step7)
 class(spec)
 spec
 ```
@@ -156,7 +157,7 @@ ir.spc <- ir.spc[!high.int & !low.int]
 plotspc(ir.spc, spc.nmax = length(ir.spc))
 ```
 
-## Baseline Correction (One of many options)
+## cq.abs.step0 Correction (One of many options)
 ```{r}
 # Apply basline correction function
 blcorr <- spc.fit.poly.below(ir.spc)
@@ -185,103 +186,97 @@ pet.key$Product <- as.character(pet.key$Product)
 pet.key$Exposure <- as.character(pet.key$Exposure)
 pet.key$Step_Retained <- as.character(pet.key$Step_Retained)
 
-# Read step 1 CyclicQUV Optical Absorbance Data
+## Read step 0 (Unexposed) CyclicQUV Optical Absorbance Data
 
-filenames <- list.files(path = "./Cary/CyclicQUV/step1/", pattern = "\\.SPC$")
-numfiles <- length(filenames)
-n <- 0
-cq.abs.step1 <- list(rep(NaN,numfiles))
-for (i in filenames) { 
-  filepath <- paste("./Cary/CyclicQUV/step1/",i,sep = "")
-  n = n + 1
-  cq.abs.step1[[n]] <- read.spc(filepath)
-  
-  # Add step data
-  
-  cq.abs.step1[[n]]@data$step <- 1
-  
-  # Match material info from key file and add to hyperSpec object
-  
-  ## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
-  
-  temp <- sub("-es01-ms01-mn01_uvvs01.SPC","",i)
-  samplenum <- sub("_",".",temp)   
-  cq.abs.step1[[n]]@data$sample <- samplenum
-  
-  row <- pmatch(samplenum, pet.key[,1])                  
-  ifelse(is.na(row) == 'FALSE',cq.abs.step1[[n]]@data$material <- pet.key[row,2], 0 )
-}
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/", pattern = "\\.spc$")
 
-cq.abs.step1 <- collapse(cq.abs.step1[1:numfiles])
-cq.abs.step1 <- orderwl(cq.abs.step1)
+# Read Files
 
-# Read step 2 CyclicQUV Optical Absorbance Data
+cq.abs.step0  <- lapply(filenames,function(i){
+  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/",i,sep = ""))
+})
 
-filenames <- list.files(path = "./Cary/CyclicQUV/step2/", pattern = "\\.SPC$")
-numfiles <- length(filenames)
-n <- 0
-cq.abs.step2 <- list(rep(NaN,numfiles))
-for (i in filenames) { 
-  filepath <- paste("./Cary/CyclicQUV/step2/",i,sep = "")
-  n = n + 1
-  cq.abs.step2[[n]] <- read.spc(filepath)
-  
-  # Add step data
-  
-  cq.abs.step2[[n]]@data$step <- 2
-  
-  ## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
-  
-  ## Extract sample number from file name
-  
-  temp <- sub("-es02-ms02-mn01_uvvs01.SPC","",i)
-  samplenum <- sub("_",".",temp)   
-  cq.abs.step2[[n]]@data$sample <- samplenum
-  
-  row <- pmatch(samplenum, pet.key[,1])                  
-  ifelse(is.na(row) == 'FALSE',cq.abs.step2[[n]]@data$material <- pet.key[row,2], 0 )
-}
+# Combine resulting list into one hyperSpec object
 
-cq.abs.step2 <- collapse(cq.abs.step2[1:numfiles])
-cq.abs.step2 <- orderwl(cq.abs.step2)
+cq.abs.step0 <- hyperSpec::collapse(cq.abs.step0[1:length(cq.abs.step0)])
 
-# Read Baseline DATA
+# Add step data
+  
+cq.abs.step0@data$step <- 0
 
-filenames <- list.files(path="./Cary/Baseline/", pattern = "\\.spc$")
-numfiles <- length(filenames)
-n <- 0
-baseline <- list(rep(NaN,numfiles))
 
-for (i in filenames) { 
-  filepath <- paste("./Cary/Baseline/",i,sep ="")
-  n = n+1
-  baseline[[n]] <- read.spc(filepath)
-  
-  # Add step data (could be performed using a matching function as below for more extensibility)
-  
-  baseline[[n]]@data$step <- 0
-  
-  # Match material info from key file and add to hyperSpec object
-  
-  ## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
-  
-  temp2 <- sub("./Cary/Baseline/","",i)
-  temp <- sub("-es00-ms00-mn01_uvvs01.spc","",temp2)
-  samplenum <- sub("_",".",temp)   
-  baseline[[n]]@data$sample <- samplenum
-  
-  row <- pmatch(samplenum, pet.key[,1])                  
-  ifelse(is.na(row) == 'FALSE',baseline[[n]]@data$material <- pet.key[row,2], 0 )
-}
+## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
 
-baseline <- collapse(baseline[1:6])
-baseline <- orderwl(baseline)
+cq.abs.step0@data$sample <- filenames %>% sub(pattern = "-es00-ms00-mn01_uvvs01.spc",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+
+# Match material info from key file and add to hyperSpec object
+
+rows <- cq.abs.step0@data$sample %>% pmatch(pet.key[,1])
+cq.abs.step0@data$material <- pet.key[rows,2]
+
+## Read step 1 CyclicQUV Optical Absorbance Data
+
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step1/", pattern = "\\.SPC$")
+
+# Read Files
+
+cq.abs.step1  <- lapply(filenames,function(i){
+  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step1/",i,sep = ""))
+})
+
+# Combine resulting list into one hyperSpec object
+
+cq.abs.step1 <- hyperSpec::collapse(cq.abs.step1[1:length(cq.abs.step1)])
+
+# Add step data
+  
+cq.abs.step1@data$step <- 1
+
+
+## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
+
+cq.abs.step1@data$sample <- filenames %>% sub(pattern = "-es01-ms01-mn01_uvvs01.SPC",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+
+# Match material info from key file and add to hyperSpec object
+
+rows <- cq.abs.step1@data$sample %>% pmatch(pet.key[,1])
+cq.abs.step1@data$material <- pet.key[rows,2]
+
+## Read step 2 CyclicQUV Optical Absorbance Data
+
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/", pattern = "\\.SPC$")
+
+# Read Files
+
+cq.abs.step2  <- lapply(filenames,function(i){
+  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/",i,sep = ""))
+})
+
+# Combine resulting list into one hyperSpec object
+
+cq.abs.step2 <- hyperSpec::collapse(cq.abs.step2[1:length(cq.abs.step2)])
+
+# Add step data
+  
+cq.abs.step2@data$step <- 2
+
+
+## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
+
+cq.abs.step2@data$sample <- filenames %>% sub(pattern = "-es02-ms02-mn01_uvvs01.SPC",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+
+# Match material info from key file and add to hyperSpec object
+
+rows <- cq.abs.step2@data$sample %>% pmatch(pet.key[,1])
+cq.abs.step2@data$material <- pet.key[rows,2]
+
+
 ```
 
 Lets check out the contents of each hyperSpec Object
 
 ```{r}
-baseline
+cq.abs.step0
 
 cq.abs.step1
 
@@ -291,9 +286,9 @@ cq.abs.step2
 We'll put these all together
 
 ```{r}
-# Combine baselines with step 1
+# Combine cq.abs.step0s with step 1
 
-cq.abs <- collapse(baseline, cq.abs.step1, cq.abs.step2)
+cq.abs <- hyperSpec::collapse(cq.abs.step0, cq.abs.step1, cq.abs.step2)
 
 cq.abs
 
@@ -399,7 +394,7 @@ Let's try it
 ```{r}
 #Start a data frame to hold the data 
 
-ex320data <- read.csv("V:/vuv-data/proj/PETPilot/Key/petpilot-key.csv")
+ex320data <- read.csv("./data/petpilot-key.csv")
 
 ex320data$Em.Peak <- NA
 ex320data$Em.Peak.int <- NA
