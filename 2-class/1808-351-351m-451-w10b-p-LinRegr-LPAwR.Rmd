@@ -1,0 +1,165 @@
+---
+title: "CWRU DSCI351-351M-453: Week10b w10b-p-LinRegr"
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+bibliography: refs.bib
+---
+  
+\setcounter{section}{10}
+\setcounter{subsection}{2}
+\setcounter{subsubsection}{1}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
+```
+
+<!-- 
+  How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2018
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike NonCommercial 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+  
+  <!-- Or on a single line like this -->
+
+#### Understanding simple linear regression
+ 
+##### Build and use our own simple linear regression algorithm
+
+  - Create multiple linear regression models in R
+  - Perform diagnostic tests of such models
+  - Score new data using a linear regression model
+  - Examine how well the model predicts the new data
+
+Regression seeks to obtain the model coefficients
+
+  - that explain the variable's relationship the best 
+  - but such a model only seldom reflects the relationship entirely
+
+Indeed, measurement error, 
+
+  - And also attributes that are not included in the analysis 
+  - affect also the data. 
+
+The model residuals 
+
+  - express the deviation of the observed data points 
+  - to the model. 
+
+The residual's value 
+
+  - is the vertical distance from a point 
+  - to the regression line. 
+
+#### Let's examine this with an example of the iris dataset. 
+
+We have already seen that the dataset contains data about iris flowers. 
+
+For the purpose of this example, 
+
+  - we will consider the petal length as the response
+    - sometimes the response is referred to as the "criterion"
+  - and the petal width as the predictor
+
+```{r}
+plot(iris$Petal.Length ~ iris$Petal.Width, 
+     main = "Relationship between petal length and petal width", 
+     xlab = "Petal width", ylab = "Petal length")
+iris.lm = lm(iris$Petal.Length ~ iris$Petal.Width)
+abline(iris.lm)
+```
+
+##### Computing the intercept and slope coefficient
+
+```{r}
+SlopeCoef = cor(iris$Petal.Length,iris$Petal.Width) * 
+  (sd(iris$Petal.Length) / sd(iris$Petal.Width))
+SlopeCoef
+
+coeffs = function(y,x) {
+  ((length(y) * sum( y*x)) - 
+      (sum( y) * sum(x)) )  / 
+    (length(y) * sum(x^2) - sum(x)^2)
+}
+
+coeffs(iris$Petal.Length, iris$Petal.Width)
+```
+
+##### Now make your linear regression function
+```{r}
+iris.lm
+
+regress =  function(y,x) {
+  slope = coeffs(y,x)
+  intercept = mean(y) - (slope * mean(x))
+  model = c(intercept, slope)
+  names(model) = c("intercept", "slope")
+  model
+}
+```
+
+##### Now perform regression on Petal Length and Petal Width
+```{r}
+model = regress(iris$Petal.Length, iris$Petal.Width)
+model
+```
+
+##### Obtaining the residuals
+```{r}
+resids = function(y,x, model) {
+  y - model[1] - (model[2] * x)
+}
+
+Residuals = resids(iris$Petal.Length, iris$Petal.Width, model)
+
+head(round(Residuals,2))
+
+par(mfrow = c(2, 2))
+plot(iris.lm)
+```
+
+#### Computing the significance of the coefficients
+
+This is also the uncertainty 
+
+  - in your regression coefficients
+```{r}
+Significance = function(y, x, model) {
+  SSE = sum(resids(y,x,model)^2)
+  DF = length(y) - 2
+  S = sqrt( SSE / DF)
+  SEslope = S / sqrt(sum( (x - mean(x))^2 ))
+  tslope = model[2] / SEslope
+  sigslope = 2*(1 - pt(abs(tslope),DF))
+  SEintercept = S * sqrt((1/length(y) + mean(x)^2 / sum( (x - mean(x))^2)))
+  tintercept = model[1] / SEintercept
+  sigintercept = 2*(1 - pt(abs(tintercept),DF))
+  RES = c(SEslope, tslope, sigslope, SEintercept, tintercept, sigintercept)
+  names(RES) = c("SE slope", "T slope", "sig slope", "SE intercept", 
+                 "t intercept", "sig intercept")
+  RES
+} 
+
+round(Significance(iris$Petal.Length,iris$Petal.Width, model), 3)
+
+summary(iris.lm)
+```
+
+
+#### Links
+
+Learning Predictive Analytics with R, Eric Mayor, Packtpub 2015

@@ -1,8 +1,17 @@
 ---
-title: "hyperSpec Package Review"
-author: "Devin Gordon"
-date: "Tuesday, October 30, 2018"
-output: pdf_document
+title: "CWRU DSCI351-351M-453: Week10a-HyperSpec Package Review"
+author: "Devin Gordon, Roger French"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+bibliography: refs.bib
 ---
 
 <!--
@@ -18,9 +27,13 @@ output: pdf_document
 # Rmd code goes below the comment marker!
 -->
 
-#Background
+\setcounter{section}{10}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
 
-## Spectra - What are they?
+#### Background
+
+##### Spectra - What are they?
 
   - "a specific set of values that can vary infinitely within a continuum"
   - Generally: 2-dimensional (sometimes higher) dimensional data, 
@@ -29,26 +42,35 @@ output: pdf_document
     - at the corresponding points
   - Examples: Optical, Mass, Political Alignment
 
-## Spectral Data - How do we store them?
+##### Spectral Data - How do we store them?
 
   - Proprietary file format: not so useful
   - .csv files (ASCII): better ~ excel, R
   - .spc files (Binary): good ~ R
 
-## hyperSpec - How to manipulate .spc files in R
+##### hyperSpec - How to manipulate .spc files in R
 
   - http://hyperspec.r-forge.r-project.org/
   - Handles spectral data
-  - Features: Convenient import, spectral range selection, shfiting,  plotting/viewing, normalization, smoothing, correction, arithmetic, initial data analysis
+  - Features: 
+    - Convenient import, 
+    - spectral range selection, 
+    - shfiting,  
+    - plotting/viewing, 
+    - normalization, 
+    - smoothing, 
+    - correction, 
+    - arithmetic, 
+    - initial data analysis
 
 
-#hyperSpec Examples
+#### hyperSpec Examples
 ```{r, echo=FALSE}
 library(dplyr)
 library(hyperSpec)
 ```
 
-## File Import
+##### File Import
 
 ```{r}
 # Read one .spc file and check its structure
@@ -59,21 +81,21 @@ class(step0)
 step0
 ```
 
-## Basic Plotting
+##### Basic Plotting
 
 ```{r}
-#Plot with hyperSpec base plotting
+# Plot with hyperSpec base plotting
 
 plotspc(step0)
 ```
 
-## Multiple .spc Files?
+##### Multiple .spc Files?
 
 - (Purposefully without a loop or apply)
 ```{r}
 # Read multiple .spc files
 
-#setwd("./data/pet_unstab_cyclic_quv_ex320/")
+# setwd("./data/pet_unstab_cyclic_quv_ex320/")
 curfile <- "./data/pet_unstab_cyclic_quv/sa19603_00_ex320.spc"
 step0 <- read.spc(curfile)
 curfile <- "./data/pet_unstab_cyclic_quv/sa19603_22_ex320.spc"
@@ -92,47 +114,48 @@ curfile <- "./data/pet_unstab_cyclic_quv/sa19603_28_ex320.spc"
 step7 <- read.spc(curfile)
 ```
 
-## Combine into one object (Good News!)
+##### Combine into one object (Good News!)
 
 ```{r}
 # Use Collpase to combine spectra
 
-spec <- hyperSpec::collapse(step0, step1, step2, step3, step4, step5, step6, step7)
+spec <- hyperSpec::collapse(step0, step1, step2, step3, step4, step5, 
+                            step6, step7)
 class(spec)
 spec
 ```
 
-## Basic Plotting
+##### Basic Plotting
 
 ```{r}
 plotspc(spec)
 ```
 
-## Spectral Range Selection
+##### Spectral Range Selection
 
 ```{r}
-#Subset and redifine the hyperSpec object according to wavelength
+# Subset and redifine the hyperSpec object according to wavelength
 
 spec <- spec[,, min ~ 600]
 spec
 ```
 
-## Basic Plotting
+##### Basic Plotting
 
 
 ```{r}
 plotspc(spec)
 ```
 
-## Spectral Arithmetic (Subtraction)
+##### Spectral Arithmetic (Subtraction)
 ```{r}
-#Perform spectral subtraction
+# Perform spectral subtraction
 
 sub <- step7 - step0
 plotspc(sub[,, min ~ 600])
 ```
 
-## Removing Bad Data
+##### Removing Bad Data
 ```{r}
 # Let's look at some fake IR data
 ir.spc <- chondro
@@ -140,24 +163,24 @@ ir.spc
 plotspc(ir.spc, spc.nmax = length(ir.spc))
 ```
 
-## Removing Bad Data
+##### Removing Bad Data
 ```{r}
-#Define any point above 1500 as bad
+# Define any point above 1500 as bad
 high.int <- apply(ir.spc > 1500, 1, any)
 
-#Maximum should atleast be 0.1 
+# Maximum should atleast be 0.1 
 low.int <- apply(ir.spc, 1, max) < 0.1
 
-#Apply Conditions
+# Apply Conditions
 ir.spc <- ir.spc[!high.int & !low.int]
 ```
 
-## Removed the bad spectra
+##### Removed the bad spectra
 ```{r}
 plotspc(ir.spc, spc.nmax = length(ir.spc))
 ```
 
-## cq.abs.step0 Correction (One of many options)
+##### cq.abs.step0 Correction (One of many options)
 ```{r}
 # Apply basline correction function
 blcorr <- spc.fit.poly.below(ir.spc)
@@ -166,14 +189,14 @@ blcorr <- spc.fit.poly.below(ir.spc)
 ir.spc <- ir.spc - blcorr
 ```
 
-## Corrected Spectra!
+##### Corrected Spectra!
 ```{r}
 plotspc(ir.spc)
 ```
 
-# Example of use
+#### Example of use, Key Files for sample Metadata
 
-## Load Cyclic QUV Absorbance Data Set
+##### Load Cyclic QUV Absorbance Data Set
 
 ```{r}
 # setwd("v:/vuv-data/proj/3M")
@@ -188,12 +211,14 @@ pet.key$Step_Retained <- as.character(pet.key$Step_Retained)
 
 ## Read step 0 (Unexposed) CyclicQUV Optical Absorbance Data
 
-filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/", pattern = "\\.spc$")
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/", 
+                        pattern = "\\.spc$")
 
-# Read Files
+# Read Files, Here using lapply
 
 cq.abs.step0  <- lapply(filenames,function(i){
-  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/",i,sep = ""))
+  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step0/", i, 
+                 sep = ""))
 })
 
 # Combine resulting list into one hyperSpec object
@@ -205,9 +230,13 @@ cq.abs.step0 <- hyperSpec::collapse(cq.abs.step0[1:length(cq.abs.step0)])
 cq.abs.step0@data$step <- 0
 
 
-## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
+## Extract sample number from file name using sub (grep) 
+## to pull the sample number from the file name 
+## match to row in the keyfile
 
-cq.abs.step0@data$sample <- filenames %>% sub(pattern = "-es00-ms00-mn01_uvvs01.spc",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+cq.abs.step0@data$sample <- filenames %>% 
+  sub(pattern = "-es00-ms00-mn01_uvvs01.spc", replacement = "") %>% 
+  sub(pattern = "_", replacement = ".") 
 
 # Match material info from key file and add to hyperSpec object
 
@@ -216,7 +245,8 @@ cq.abs.step0@data$material <- pet.key[rows,2]
 
 ## Read step 1 CyclicQUV Optical Absorbance Data
 
-filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step1/", pattern = "\\.SPC$")
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step1/", 
+                        pattern = "\\.SPC$")
 
 # Read Files
 
@@ -233,9 +263,12 @@ cq.abs.step1 <- hyperSpec::collapse(cq.abs.step1[1:length(cq.abs.step1)])
 cq.abs.step1@data$step <- 1
 
 
-## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
+## Extract sample number from file name using sub (grep) 
+## to pull the sample number from the file name match to row in the keyfile
 
-cq.abs.step1@data$sample <- filenames %>% sub(pattern = "-es01-ms01-mn01_uvvs01.SPC",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+cq.abs.step1@data$sample <- filenames %>% 
+  sub(pattern = "-es01-ms01-mn01_uvvs01.SPC",replacement = "") %>% 
+  sub(pattern = "_", replacement = ".") 
 
 # Match material info from key file and add to hyperSpec object
 
@@ -244,12 +277,14 @@ cq.abs.step1@data$material <- pet.key[rows,2]
 
 ## Read step 2 CyclicQUV Optical Absorbance Data
 
-filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/", pattern = "\\.SPC$")
+filenames <- list.files(path = "./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/", 
+                        pattern = "\\.SPC$")
 
 # Read Files
 
 cq.abs.step2  <- lapply(filenames,function(i){
-  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/",i,sep = ""))
+  read.spc(paste("./data/pet_unstab_cyclic_quv/Cary/CyclicQUV/step2/", 
+                 i, sep = ""))
 })
 
 # Combine resulting list into one hyperSpec object
@@ -261,9 +296,12 @@ cq.abs.step2 <- hyperSpec::collapse(cq.abs.step2[1:length(cq.abs.step2)])
 cq.abs.step2@data$step <- 2
 
 
-## Extract sample number from file name using sub (grep) to pull the sample number from the file name match to row in the keyfile
+## Extract sample number from file name using sub (grep) 
+## to pull the sample number from the file name match to row in the keyfile
 
-cq.abs.step2@data$sample <- filenames %>% sub(pattern = "-es02-ms02-mn01_uvvs01.SPC",replacement = "") %>% sub(pattern ="_",replacement = ".") 
+cq.abs.step2@data$sample <- filenames %>% 
+  sub(pattern = "-es02-ms02-mn01_uvvs01.SPC",replacement = "") %>%
+  sub(pattern = "_",replacement = ".") 
 
 # Match material info from key file and add to hyperSpec object
 
@@ -294,7 +332,7 @@ cq.abs
 
 ```
 
-# Utilizing spectral arithmetric to change ordinate axis
+#### Utilizing spectral arithmetric to change ordinate axis
 
 ```{r}
 # Divide by sample thickness for Abs/cm
@@ -320,34 +358,36 @@ cq.abs
 
 # Remove errenous points (negative)
 
-`cq.abs` [[`cq.abs` < 0]] <- NA
+`cq.abs`[[`cq.abs` < 0]] <- NA
 
 cq.abs
 ```
 
 
-## Better plotting using ggplot2 graphics
+##### Better plotting using ggplot2 graphics
 
 ```{r, echo=FALSE}
 
 # Plot directly using ggplot2 graphics
 
-qplotspc (cq.abs[,, 304  ~ 800], mapping = aes (x = .wavelength, y = spc, color = as.factor(step), group = .rownames), spc.nmax = length(cq.abs)) +
-  facet_grid (material ~ ., scales="free_y") + xlab ("Wavelength [nm]") + ylab("Abs/cm") +
-  geom_line(size=1) +
+qplotspc(cq.abs[,, 304  ~ 800], 
+          mapping = aes(x = .wavelength, y = spc, color = as.factor(step), 
+                         group = .rownames), spc.nmax = length(cq.abs)) +
+  facet_grid(material ~ ., scales = "free_y") + xlab("Wavelength [nm]") + 
+  ylab("Abs/cm") + geom_line(size = 0.25) + 
   ggtitle(paste("Optical Absorbance Spectra - CyclicQUV")) +
   scale_x_continuous(breaks = seq(0, 800, by = 100)) +
-  scale_colour_discrete(name  ="Exposure Time [hr]",
-                        breaks=c("0", "1", "2"),
-                        labels=c("0", "168", "336")) +
-  theme(legend.title = element_text(size=20,face="bold"), 
-        legend.text = element_text(size=20, face="bold"),
-        axis.text=element_text(size=18,face="bold"),
-        axis.title=element_text(size=30,face="bold"), 
-        plot.title=element_text(size=30,face="bold"), strip.text.y = element_text(size = 12))
+  scale_colour_discrete(name  = "Exposure Time [hr]", breaks = c("0", "1", "2"),
+                        labels = c("0", "168", "336")) +
+  theme(legend.title = element_text(size = 10,face = "bold"), 
+        legend.text = element_text(size = 10, face = "bold"),
+        axis.text = element_text(size = 9,face = "bold"),
+        axis.title = element_text(size = 12,face = "bold"), 
+        plot.title = element_text(size = 12,face = "bold"), 
+        strip.text.y = element_text(size = 5))
 ```
 
-# Peak Information extraction
+#### Peak Information extraction
 
 We can directly address the intensity value at a specific wavelength
 
@@ -355,14 +395,20 @@ We can directly address the intensity value at a specific wavelength
 spec[2,,460]@data$spc
 ```
 
-Using this concept, we can also find full width at half max by approximating the wavelengths at half the intensity of the peak
+Using this concept, 
+
+  - we can also find full width at half max 
+    - by approximating the wavelengths 
+    - at half the intensity of the peak
 
 ```{r}
 
-lower <- approx(spec[2,,330 ~ 460]$spc, spec[2,,330 ~ 460]@wavelength, xout = c(spec[2,,460]$spc/2))
+lower <- approx(spec[2,,330 ~ 460]$spc, spec[2,,330 ~ 460]@wavelength, 
+                xout = c(spec[2,,460]$spc/2))
 lower
 
-upper <- approx(spec[2,,460 ~ 600]$spc, spec[2,,460 ~ 600]@wavelength, xout = c(spec[2,,460]$spc/2))
+upper <- approx(spec[2,,460 ~ 600]$spc, spec[2,,460 ~ 600]@wavelength, 
+                xout = c(spec[2,,460]$spc/2))
 upper
 
 fwhm <- upper$y - lower$y
@@ -377,9 +423,13 @@ fwhm.spc <- function(spec, peak.wl, lower.bound, upper.bound){
 
   peak.wl <- as.numeric(peak.wl)
   
-   lower <- approx(spec[,,lower.bound ~ peak.wl]$spc, spec[,,lower.bound ~ peak.wl]@wavelength, xout = c(spec[,,peak.wl]$spc/2))
+   lower <- approx(spec[,,lower.bound ~ peak.wl]$spc, 
+                   spec[,,lower.bound ~ peak.wl]@wavelength, 
+                   xout = c(spec[,,peak.wl]$spc/2))
 
-  upper <- approx(spec[,,peak.wl ~ upper.bound]$spc, spec[,,peak.wl ~ upper.bound]@wavelength, xout = c(spec[,,peak.wl]$spc/2))
+  upper <- approx(spec[,,peak.wl ~ upper.bound]$spc, 
+                  spec[,,peak.wl ~ upper.bound]@wavelength, 
+                  xout = c(spec[,,peak.wl]$spc/2))
  
   fwhm <- upper$y - lower$y
   center <- mean(c(upper$y,lower$y))
@@ -424,8 +474,9 @@ for (i in 1:length(spec)) {
     
     # Find the peak wavelength
     
-    peak.out <- approx(temp[,,450 ~ 470]$spc, temp[,,450 ~ 470]@wavelength, xout = max(temp[,,450~470]))
-    peak.wl <- ifelse(is.na(peak.out$y)==TRUE,450,peak.out$y)
+    peak.out <- approx(temp[,,450 ~ 470]$spc, temp[,,450 ~ 470]@wavelength, 
+                       xout = max(temp[,,450~470]))
+    peak.wl <- ifelse(is.na(peak.out$y) == TRUE,450,peak.out$y)
     ex320data$Em.Peak[row] <- peak.wl
    
      # Run our function
@@ -447,28 +498,28 @@ Check the result
 head(ex320data)
 ```
 
-# Other plots
+#### Other plots
 
-## Matrix Plot - Fluorescence Data
+##### Matrix Plot - Fluorescence Data
 ```{r}
 plotmat(spec)
-plotmat(spec, contour = TRUE, add= TRUE)
+plotmat(spec, contour = TRUE, add = TRUE)
 ```
 
-## Matrix Plot - IR Data
+##### Matrix Plot - IR Data
 ```{r}
 plotmat(ir.spc)
 ```
 
-## Stacked Spectra
+##### Stacked Spectra
 
 ```{r}
 plotspc(spec, stacked = TRUE)
 ```
 
-# Summary
+#### Summary
 
-## hyperSpec
+##### hyperSpec
 
 - hyperSpec is a powerful R package for handling and manipulating spectral data in R
 - More to come!
