@@ -11,12 +11,11 @@ output:
   html_document:
     toc: yes
 urlcolor: blue
-bibliography: refs.bib
 ---
   
 \setcounter{section}{10}
 \setcounter{subsection}{2}
-\setcounter{subsubsection}{1}
+\setcounter{subsubsection}{2}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
