@@ -1,5 +1,5 @@
 ---
-title: "CWRU DSCI351-351M-453: Week00a"
+title: "CWRU DSCI351-451: Week00a  "
 author: "Roger H. French, JiQi Liu"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -14,21 +14,21 @@ urlcolor: blue
 bibliography: refs.bib
 ---
 
- \setcounter{section}{1}
- \setcounter{subsection}{1}
- \setcounter{subsubsection}{0}
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
+knitr::opts_chunk$set(fig.width=6, fig.height=4.5) 
 ```
 
+ \setcounter{section}{10}
+ \setcounter{subsection}{2}
+ \setcounter{subsubsection}{0}
+ 
  <!-- 
  How to make comments inside Rmarkdown
-# Script Name: My class notes template for Fall 2018
+# Script Name: My class notes template for Fall 2016
 # Purpose: This is a template Rmd file to start a new class from
 # Authors: Roger H. French
-# License: Creative Commons Attribution-ShareAlike NonCommercial 4.0 International License.
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
 ##########
 # Latest Changelog Entires:
 # v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
@@ -39,19 +39,20 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5)
 
 #### Reading, Homeworks, Projects, SemProjects
 
-  - Homework: 
-    - HW6 is given out today
-    - Due Tuesday November 13th
-  - Readings: 
-    - ISLR Chapter 3 today, Simple Linear Regression
-    - ISLR Chapter 4 for tuesday, Multiple Regression
-  - Projects: We have four 2 week EDA projects
-    - Project 3 due Thursday November 20, 2019
+  * Homework: 
+    * HW5 was due this past Tuesday October 30th, 2018
+    * HW6 is given out next Thursday November 8th 2018
+  * Readings: 
+    * OIS7 for this past Tuesday, Linear Regression
+    * OIS8 for today, Multiple and Logistic Regression
+  * Projects: We will have four 2 week EDA projects
+    * Project 2 Time-series Analysis Due today
   * 451 SemProjects:  
-    * Third SemProj Report Outs Dec. 4,6 2018
+    * SemProj Report Outs Dec. 4,6 2018
     * Final full SemProject Written Report Due 12/17/2018
   * Final Exam
-    * Monday December 17th, 12 noon to 3pm, Olin 313
+    * Monday December 17th, 12 noon to 3pm, Olin 303
+
 
 #### Textbooks
 
@@ -63,13 +64,7 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5)
   
 #### Syllabus
 
-![DSCI353-453 Syllabus](./figs/syllabus.png)
-
-#### Links
-
-
-
-#### References
+![DSCI351-451 Syllabus](./figs/syllabus.png)
 
 
 

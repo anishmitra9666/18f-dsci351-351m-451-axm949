@@ -1,0 +1,303 @@
+---
+title: "CWRU DSCI351-351M-453: Week00a"
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+bibliography: refs.bib
+---
+
+ \setcounter{section}{11}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{1}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5) 
+```
+
+ <!-- 
+ How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2018
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike NonCommercial 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+
+<!-- Or on a single line like this -->
+ 
+
+#### Reading, Homeworks, Projects, SemProjects
+
+  - Homework: 
+    - 
+    - 
+  - Readings: 
+    - 
+    - 
+  - Projects: We will have four 2 week EDA projects
+    - 
+  - 451 SemProjects:  
+    - 
+    - 
+  - Final Exam
+    - Monday December 17th, 12 noon to 3pm, Olin 313
+
+
+#### Textbooks
+
+  - [Peng: R Programming for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=F1mVHgAAAEAJ&pg=GBS.PA1)
+  - [Peng: Exploratory Data Analysis with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=R-09BgAAAEAJ&pg=GBS.PA1)
+  - [Open Intro Stats, v3](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=G2EOBwAAAEAJ&pg=GBS.PA0)
+  - [Wickham: R for Data Science](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=I6y3DQAAQBAJ&pg=GBS.PA1)
+  - [Hastie: Intro to Statistical Learning with R](https://play.google.com/books/reader?printsec=frontcover&output=reader&id=KtuPCwAAAEAJ&pg=GBS.PA0)
+  
+#### Syllabus
+
+![DSCI353-453 Syllabus](./figs/syllabus.png)
+
+#### Anscombe’s Quartet of ‘Identical’ Simple Linear Regressions
+
+Visualization may not be as precise as statistics, 
+
+  - but it provides a unique view onto data 
+    - that can make it much easier to discover 
+    - interesting structures than numerical methods. 
+  - Visualization also provides the context necessary 
+    - to make better choices 
+    - and to be more careful when fitting models. 
+
+Anscombe’s Quartet is a case in point, 
+
+  - showing that four datasets 
+    - that have identical statistical properties (i.e. summary statistics)
+    - can indeed be very different.
+
+##### Arguing for Graphics in 1973
+
+In 1973, Francis J. Anscombe 
+
+  - published a paper titled, Graphs in Statistical Analysis. 
+  - The idea of using graphical methods 
+    - had been established relatively recently by John Tukey, 
+    - but there was evidently still a lot of skepticism. 
+  - Anscombe first lists some notions 
+    - that textbooks were “indoctrinating” people with, 
+    - like the idea that “numerical calculations are exact, 
+    - but graphs are rough.”
+
+He then presents a table of numbers. 
+
+  - It contains four distinct datasets (hence the name Anscombe’s Quartet), 
+  - each with statistical properties that are essentially identical: 
+    - the mean of the x values is 9.0, 
+    - mean of y values is 7.5, 
+  - they all have nearly identical 
+    - variances, 
+    - correlations, 
+    - and regression lines (to at least two decimal places).
+
+```{r}
+knitr::kable(anscombe)
+
+```
+
+#### Let’s do the simple descriptive statistics on each data set
+
+##### Here is mean of x and y
+
+```{r}
+anscombe.1 <- data.frame(x = anscombe[["x1"]], y = anscombe[["y1"]], Set = "Anscombe Set 1")
+anscombe.2 <- data.frame(x = anscombe[["x2"]], y = anscombe[["y2"]], Set = "Anscombe Set 2")
+anscombe.3 <- data.frame(x = anscombe[["x3"]], y = anscombe[["y3"]], Set = "Anscombe Set 3")
+anscombe.4 <- data.frame(x = anscombe[["x4"]], y = anscombe[["y4"]], Set = "Anscombe Set 4")
+
+anscombe.data <- rbind(anscombe.1, anscombe.2, anscombe.3, anscombe.4)
+aggregate(cbind(x, y) ~ Set, anscombe.data, mean)
+```
+
+
+#### And SD
+```{r}
+aggregate(cbind(x, y) ~ Set, anscombe.data, sd)
+
+```
+
+##### And correlation between x and y
+```{r}
+library(plyr)
+
+correlation <- function(data) {
+    x <- data.frame(r = cor(data$x, data$y))
+    return(x)
+}
+
+ddply(.data = anscombe.data, .variables = "Set", .fun = correlation)
+```
+
+As can be seen 
+
+  - they are pretty much the same 
+  - for every data set.
+
+#### Let’s perform linear regression model for each
+```{r}
+model1 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe Set 1"))
+model2 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe Set 2"))
+model3 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe Set 3"))
+model4 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe Set 4"))
+```
+
+##### Here are the summaries
+
+```{r}
+summary(model1)
+```
+
+```{r}
+summary(model2)
+```
+
+```{r}
+summary(model3)
+```
+
+```{r}
+summary(model4)
+```
+
+#### Now, do what you should have done in the first place: EDA PLOTS
+```{r}
+library(ggplot2)
+
+gg <- ggplot(anscombe.data, aes(x = x, y = y))
+gg <- gg + geom_point(color = "black")
+gg <- gg + facet_wrap(~Set, ncol = 2)
+gg <- gg + geom_smooth(formula = y ~ x, method = "lm", se = FALSE, data = anscombe.data)
+gg
+```
+
+##### Review each dataset
+
+While dataset I 
+
+  - appears like many well-behaved datasets 
+    - that have clean and well-fitting linear models, 
+  - the others are not served nearly as well. 
+
+Dataset II does not have a linear correlation; 
+
+Dataset III does, 
+
+  - but the linear regression is thrown off by an outlier. 
+  - It would be easy to fit a correct linear model, 
+    - if only the outlier were spotted 
+    - and removed before doing so. 
+    
+Dataset IV, finally, 
+
+  - does not fit any kind of linear model, 
+  - but the single outlier keeps the alarm from going off.
+
+##### How do you find out which model can be applied? 
+
+Anscombe’s answer is to use graphs: 
+
+  - looking at the data immediately reveals a lot of the structure, 
+    - and makes the analyst aware of “pathological” cases like dataset IV. 
+  - Computers are not limited to running numerical models, either.
+
+A computer should make both calculations and graphs. 
+
+  - Both sorts of output should be studied; 
+  - each will contribute to understanding.
+
+#### What is an Outlier?
+
+In addition to showing how useful a clear look onto data can be, 
+
+Anscombe also raises an interesting question: 
+
+  - what, exactly, is an outlier? 
+  - He describes a study on education, 
+    - where he studied per-capita expenditures for public schools 
+    - in the 50 U.S. states and the District of Columbia. 
+  - Alaska is a bit of an outlier, 
+    - so it moves the regression line away from the mainstream. 
+  - The obvious response would be to remove Alaska from the data 
+    - before computing the regression. 
+  - But then, another state will be an outlier. 
+  - Where do you stop?
+
+Anscombe argues that the correct answer 
+
+  - is to show both the regression with Alaska, 
+  - but also how much it contributes 
+    - and what happens when it is removed.
+
+The tool here, again, are graphical representations. 
+
+  - Not only the actual data needs to be shown, 
+    - but also the distances from the regression line (the residuals), 
+    - and other statistics that help judge how well the model fits. 
+  - It seems like an obvious thing to do, 
+    - but presumably was not the norm in the 1970s, 
+    - and I can imagine that it still not always is.
+
+It can be seen both graphically 
+
+  - and from regression summary 
+    - that each data set resulted in same statistical model!
+  - Intercepts, 
+  - coeficients 
+    - and their p values are the same. 
+  - SEE (standard error of the estimate, or SD of residuals), 
+  - F-value 
+    -and it’s p values 
+  - are the same.
+
+#### Conclusion: 
+
+ALWAYS plot your data! 
+
+  - And always do model diagnostics by plotting the residuals.
+```{r}
+par(mfrow = c(2, 2))
+plot(model1, main = "Model 1")
+
+
+plot(model2, main = "Model 2")
+
+
+plot(model3, main = "Model 3")
+
+
+plot(model4, main = "Model 4")
+```
+
+References:
+
+Anscombe, Francis J. (1973) Graphs in statistical analysis. American Statistician, 27, 17–21.
+
+What is Anscombe’s Quartet and why is it important? - by Mladen Jovanovic
+
+Anscombe’s Quartet - by Robert Kosara
+
+#### Links
+
+[Anscombe’s Quartet of ‘Identical’ Simple Linear Regressions](https://rstudio-pubs-static.s3.amazonaws.com/52381_36ec82827e4b476fb968d9143aec7c4f.html)
+
+#### References
+
+
+
