@@ -1,0 +1,376 @@
+---
+title: "DSCI351-451- ISLR2,3 Intro R, Lin. Regr. Labs"
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+ 
+ \setcounter{section}{11}
+ \setcounter{subsection}{2}
+ \setcounter{subsubsection}{2}
+
+#### ISLR R Labs are at the end of each chapter
+
+
+#### Chapter 2 Lab: Introduction to R
+
+Notice: ISLR was published in 2013
+
+ggplot2 Graphics are not used!
+
+  - Since this is before ggplot2 (or even ggplot) were released
+  
+And there are no pipes!
+
+  - So this was before the tidyverse R packages were released
+  - not even the dplyr or plyr or magrittr R packages had been released
+  
+Also in ISLR, they use = instead of the proper <- assignment operator
+
+  - So their code style is different from our Google R style
+
+##### Basic Commands
+
+```{r}
+x <- c(1, 3, 2, 5) # concatenate a vector
+x # dispay the vector
+```
+
+```{r}
+x <-  c(1, 6, 2) # concatenate a vector
+x # display a vector
+y <-  c(1, 4, 3) # concatenate a vector
+
+length(x) # get the length of a vector
+length(y) # get the length of a vector
+
+x + y # add two vectors
+```
+
+```{r}
+ls() # list objects in the work space
+rm(x, y) # remove objects in the work space
+ls() # list objects in the workspace
+rm(list = ls()) # remove all objects in the workspace 
+```
+
+```{r}
+# ?matrix # help on matrix
+x <- matrix(data = c(1, 2, 3, 4), nrow = 2, ncol = 2) # make a matrix
+x # display a matrix
+x <- matrix(c(1, 2, 3, 4), 2, 2) # make a matrix
+matrix(c(1, 2, 3, 4), 2, 2, byrow = TRUE) # matrix filled by row
+sqrt(x) # Square root of each value in the matrix
+x^2 # Square each value in the matrix
+```
+
+```{r}
+x <- rnorm(50) # randomly generates 50 values
+y <- x + rnorm(50, mean = 50, sd = 0.1) # randomly generates 50 values with 
+                    # certain criteria and adds the contents of the vector x
+
+cor(x, y) # Finds the correlation between the two vectors
+```
+
+```{r}
+set.seed(1303) # sets a new seed
+rnorm(50) # makes 50 new random values
+
+set.seed(3) # sets a new seed 
+y <- rnorm(100) # Makes 100 random variables
+```
+
+```{r}
+mean(y) # Calculates the mean of the vector
+var(y) # calculates the variance of the vector
+sqrt(var(y)) # calculates the square root of the variance
+sd(y) # calculates the standard deviation. 
+      # Which is the square root of the variance
+```
+
+##### Graphics
+
+```{r}
+x <- rnorm(100) # caluculates 100 random values
+y <- rnorm(100) # calculates 100 random values
+
+plot(x, y) # plots these two vectors against each other
+```
+
+```{r}
+plot(x, y, xlab = "this is the x-axis", ylab = "this is the y-axis", 
+     main = "Plot of X vs Y") # Plots the same data but applies labels to the plot
+pdf("Figure.pdf") # starts the pdf device
+
+plot(x, y, col = "green") # plots the data 
+dev.off() # turns off the device and prints the pdf to file
+```
+
+```{r}
+x <- seq(1, 10) # generates a sequence of 10 values
+x # displays the above values
+x <- 1:10 # this does the exact same thing as the sequence function (for integers) 
+x # displays the vector
+x <- seq(-pi, pi, length = 50) # Takes the two end limits and generates 50 numbers that fit inbetween
+y <- x # sets x to y
+f <- outer(x, y, function(x, y) cos(y)/(1 + x^2)) #x dotted with the transpose of y
+contour(x, y, f) # generates a contour
+contour(x, y, f, nlevels = 45, add = T) # Generates another contour plot with more contour lines
+fa <- (f - t(f))/2 # a manipulation of the data
+contour(x, y, fa, nlevels = 15) # Plots the new contour
+image(x, y, fa) # turns the contour into a heatmap image
+persp(x, y, fa) # creates a perspective plot of the data
+persp(x, y, fa, theta = 30) # rotates the perspective plot by 30 degrees
+persp(x, y, fa, theta = 30, phi = 20) # another rotation
+persp(x, y, fa, theta = 30, phi = 70) # another rotation
+persp(x, y, fa, theta = 30, phi = 40) # another rotation
+```
+
+##### Indexing Data
+
+```{r}
+A <- matrix(1:16, 4, 4) # generates a 4 by 4 matrix
+A # displays the matrix
+A[2, 3] # gets one value of the matrix 
+A[c(1, 3), c(2, 4)] # grabs a few points from the matrix
+A[1:3, 2:4] # gets a range of points from the matrix
+A[1:2, ] # gets two rows
+A[, 1:2] # gets two columns
+A[1, ] # gets the first row
+A[-c(1, 3), ] # gets not rows 1 and 3
+A[-c(1, 3), -c(1, 3, 4)] # gets not those values
+dim(A) # gets the dimensions of A
+```
+
+##### Loading Data
+
+```{r}
+library(ISLR)
+attach(Auto)
+# Auto <- read.table("Auto.data")
+# fix(Auto)
+# Auto <- read.table("Auto.data",header = T,na.strings = "?")
+# fix(Auto)
+
+Auto <- read.csv("data/Auto.csv", header = T, na.strings = "?")
+fix(Auto)
+dim(Auto)
+Auto[1:4, ]
+Auto = na.omit(Auto)
+dim(Auto)
+names(Auto)
+attach(Auto)
+```
+
+##### Additional Graphical and Numerical Summaries
+
+```{r}
+library(ISLR)
+plot(cylinders, mpg)
+# plot(Auto$cylinders, Auto$mpg)
+attach(Auto)
+plot(cylinders, mpg)
+cylinders = as.factor(cylinders)
+plot(cylinders, mpg)
+plot(cylinders, mpg, col = "red")
+plot(cylinders, mpg, col = "red", varwidth = T)
+plot(cylinders, mpg, col = "red", varwidth = T,horizontal = T)
+plot(cylinders, mpg, col = "red", varwidth = T, xlab = "cylinders", ylab = "MPG")
+hist(mpg)
+hist(mpg, col = 2)
+hist(mpg, col = 2, breaks = 15)
+```
+
+```{r}
+# pairs(Auto)
+pairs(~ mpg + displacement + horsepower + weight + acceleration, Auto)
+plot(horsepower, mpg)
+identify(horsepower, mpg, name)
+summary(Auto)
+summary(mpg)
+```
+
+
+#### Chapter 3 Lab: Linear Regression
+
+```{r}
+library(MASS)
+library(ISLR)
+```
+
+##### Simple Linear Regression
+
+```{r}
+# fix(Boston)
+names(Boston)
+
+# lm.fit=lm(medv~lstat) # linear fit (fails)
+lm.fit <- lm(medv~lstat, data = Boston) # linear fit (success with data)
+attach(Boston) # attaches the dataset
+lm.fit <- lm(medv~lstat) # linear model again
+lm.fit # shows the lm fit
+
+summary(lm.fit) # summary stats of the lm fit
+
+names(lm.fit) # names of the components in the lm object
+
+coef(lm.fit) # coefs of the model
+
+confint(lm.fit) # 95% interval
+
+predict(lm.fit, data.frame(lstat = (c(5,10,15))), interval = "confidence") # prediction with interval
+predict(lm.fit, data.frame(lstat = (c(5,10,15))), interval = "prediction") # prediction with prediction interval
+
+plot(lstat, medv) # plots the vars
+
+
+abline(lm.fit) # plots the fit
+
+
+abline(lm.fit, lwd = 3) # plots the fit again
+
+abline(lm.fit, lwd = 3, col = "red") # plots the fit and adds a color
+
+plot(lstat, medv, col = "red") # plots the data with a color
+
+plot(lstat, medv, pch = 20) # plots the data with larger points
+
+plot(lstat, medv, pch = "+") # plots the data with plus signs
+
+plot(1:20, 1:20, pch = 1:20) # plots a x = y line of various shapes
+
+par(mfrow = c(2, 2)) # sets of 2 by 2 plot window
+
+plot(lm.fit) # plots various model plots. Residuals etc.
+
+plot(predict(lm.fit), residuals(lm.fit)) # computes the residuals
+
+plot(predict(lm.fit), rstudent(lm.fit)) # computes the student
+
+plot(hatvalues(lm.fit)) # shows the leverage statistics
+
+which.max(hatvalues(lm.fit)) # identifies the largest leverage statistic
+```
+
+##### Multiple Linear Regression
+
+```{r}
+lm.fit <- lm(medv~lstat + age, data = Boston) # plus sign adds more predictors
+summary(lm.fit) # summary of the fit
+
+lm.fit <- lm(medv~., data = Boston) # all predictors in data set used
+summary(lm.fit) # summary of that model
+
+library(car) # gets the car set which contains vif() 
+vif(lm.fit) # compute variance inflation factors
+
+lm.fit1 <- lm(medv~. - age, data = Boston) # remove age because of high p value
+
+summary(lm.fit1) # summary of that model
+
+lm.fit1 <- update(lm.fit, ~.-age) # updates the old model as opposed to making a new one
+```
+
+##### Interaction Terms
+
+```{r}
+# lstat:age adds an interaction term 
+# however, the * adds the interaction terms as well as the individual terms
+summary(lm(medv~lstat * age, data = Boston)) # summary of the interation terms and the individual terms
+```
+
+##### Non-linear Transformations of the Predictors
+
+```{r}
+lm.fit2 <- lm(medv~lstat + I(lstat^2)) # polynomial fit
+summary(lm.fit2) # summary of that fit
+lm.fit <- lm(medv~lstat) # a linear fit
+anova(lm.fit, lm.fit2) # analysis of variance of those 2 fits
+par(mfrow = c(2, 2)) # a 2 by 2 plot window
+plot(lm.fit2) # plots the model plots into the 2 by 2 windows
+lm.fit5 <- lm(medv~poly(lstat, 5)) # computes a fifth order polynomial
+summary(lm.fit5) # summary of the fifth order poly
+summary(lm(medv~log(rm), data = Boston)) # summary of the log of the rm predictor 
+```
+
+##### Qualitative Predictors
+
+```{r}
+# fix(Carseats)
+names(Carseats)
+lm.fit <- lm(Sales~. + Income:Advertising + Price:Age, data = Carseats)
+summary(lm.fit)
+attach(Carseats)
+contrasts(ShelveLoc)
+```
+
+##### Writing Functions
+
+As we have seen, R comes with many useful functions, and still more func-
+tions are available by way of R libraries. 
+
+However, we will often be interested in performing an operation for which 
+no function is available. 
+
+In this setting, we may want to write our own function. 
+
+For instance, below we provide a simple function 
+
+  - that reads in the ISLR and MASS libraries, 
+  - called LoadLibraries(). 
+
+Before we have created the function, R returns an error if we try to call it.
+
+```{r}
+# LoadLibraries
+# LoadLibraries()
+```
+
+We now create the function. 
+
+Note that 
+
+  - the + symbols are printed by R 
+  - and should not be typed in. 
+  
+The { symbol informs R that multiple commands are about to be input. 
+
+Hitting Enter after typing { 
+
+  - will cause R to print the + symbol. 
+  
+We can then input as many commands as we wish, hitting Enter after each one. 
+
+Finally the } symbol informs R that no further commands will be entered.
+
+```{r}
+LoadLibraries = function(){
+  library(ISLR)
+  library(MASS)
+  print("The libraries have been loaded.")
+  }
+```
+
+Now if we type in LoadLibraries, R will tell us what is in the function.
+
+```{r}
+LoadLibraries
+```
+
+If we call the function, 
+
+  - the libraries are loaded in 
+  - and the print statement is output.
+
+```{r}
+LoadLibraries()
+```
+

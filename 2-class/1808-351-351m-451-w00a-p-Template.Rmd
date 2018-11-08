@@ -40,19 +40,18 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5)
 #### Reading, Homeworks, Projects, SemProjects
 
   - Homework: 
-    - 
-    - 
+    - HW6 is given out today
+    - Due Tuesday November 13th
   - Readings: 
-    - 
-    - 
-  - Projects: We will have four 2 week EDA projects
-    - 
-  - 451 SemProjects:  
-    - 
-    - 
-  - Final Exam
-    - Monday December 17th, 12 noon to 3pm, Olin 313
-
+    - ISLR Chapter 3 today, Simple Linear Regression
+    - ISLR Chapter 4 for tuesday, Multiple Regression
+  - Projects: We have four 2 week EDA projects
+    - Project 3 due Thursday November 20, 2019
+  * 451 SemProjects:  
+    * Third SemProj Report Outs Dec. 4,6 2018
+    * Final full SemProject Written Report Due 12/17/2018
+  * Final Exam
+    * Monday December 17th, 12 noon to 3pm, Olin 313
 
 #### Textbooks
 
