@@ -1,16 +1,15 @@
 ---
 title: 'CWRU DSCI351-451: ISLR4 Classification'
-author: "Prof.:Roger French, TA:Alan Curran"
-date: "November 16, 2017"
-output:
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
   pdf_document:
-    number_sections: yes
-    toc: yes
-    toc_depth: 5
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
   html_document:
-    number_sections: yes
     toc: yes
-    toc_depth: 5
 urlcolor: blue
 ---
  
@@ -41,8 +40,8 @@ knitr::opts_chunk$set(echo = TRUE)
 We'll be using the glm package for "Fitting Generalized Linear Models"
 
   + glm is used to fit generalized linear models, 
-  + specified by giving a symbolic description of the linear predictor and 
-  + a description of the error distribution.
+    + specified by giving a symbolic description of the linear predictor and 
+    + a description of the error distribution.
 
 #### The Stock Market Data
 
@@ -75,6 +74,16 @@ Get a better colored plot by the direction of the market from the prio day
 
 ```{r}
 pairs(Smarket, col = Smarket$Direction)
+```
+```{r}
+library(ggplot2)
+library(GGally)
+ggcorr(Smarket)
+```
+
+
+```{r}
+ggpairs(Smarket)
 ```
 
 Check the correlation coefficients in the data

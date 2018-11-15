@@ -1,7 +1,7 @@
 ---
 title: "CWRU DSCI351-451: Week12a-p Multiple Regression  "
-author: "Roger H. French, Alan Curran"
-date: "November 14, 2017"
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   pdf_document:
     toc: true
@@ -19,8 +19,8 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 4.5)
 ```
 
  \setcounter{section}{12}
- \setcounter{subsection}{2}
- \setcounter{subsubsection}{0}
+ \setcounter{subsection}{1}
+ \setcounter{subsubsection}{2}
  
  <!-- 
  How to make comments inside Rmarkdown
@@ -272,8 +272,8 @@ We also want to check whether
 # install.packages("gmp")
 # install.packages("Rmpfr")
 # install.packages("HH")
-library(HH)
-vif(Commit ~ Exhaus + Depers + Accompl, data = nurses)
+# library(HH)
+# vif(Commit ~ Exhaus + Depers + Accompl, data = nurses)
 ```
 
 There are several rules-of-thumb to assess this. 

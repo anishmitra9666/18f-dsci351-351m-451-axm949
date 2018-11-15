@@ -1,16 +1,15 @@
 ---
 title: 'CWRU DSCI351-451: Classification: Cluster Analysis'
-author: "Prof.:Roger French, TA:Alan Curran"
-date: "November. 16, 2017"
-output:
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
   pdf_document:
     toc: true
     number_sections: true
-    toc_depth: 5
+    toc_depth: 6
+    highlight: tango
   html_document:
-    toc: true
-    number_sections: true
-    toc_depth: 5
+    toc: yes
 urlcolor: blue
 ---
  
@@ -40,13 +39,12 @@ knitr::opts_chunk$set(echo = TRUE)
 #### Reading, Homeworks, Projects, SemProjects
 
   * Homework: 
-    * 
-    * 
+    * HW6 due today
   * Readings: 
-    * ISLR 3 on Regression
-    * ISLR 4 on Classification
+    * ISLR 4 on Classification for today
+    * ISLR 6 on Linear Model Selection
   * Projects: We will have four 2 week EDA projects
-    * Project 3 Finished last week
+    * Project 3 due next Tuesday
   * 451 SemProjects:  
     * Report Outs 3 In Week 15a, 15b
 
