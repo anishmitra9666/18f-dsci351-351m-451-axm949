@@ -15,7 +15,7 @@ urlcolor: blue
  
  \setcounter{section}{12}
  \setcounter{subsection}{2}
- \setcounter{subsubsection}{0}
+ \setcounter{subsubsection}{1}
  
  <!-- 
  How to make comments inside Rmarkdown
