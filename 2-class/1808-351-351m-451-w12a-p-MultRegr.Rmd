@@ -39,17 +39,17 @@ v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
 #### Reading, Homeworks, Projects, SemProjects
 
   * Homework: 
-    * HW6 Due Thursday, November 14th
+    * HW6 Due Thursday, November 8th
   * Readings: 
-    * ISLR4 today
-    * ISLR6 Thursday
+    * ISLR4 Classification today
+    * ISLR6 Lineary Model Selection and Regularization this Thursday
   * Projects: We will have four 2 week EDA projects
     * You have Proj 3
   * 451 SemProjects:  
-    * 
+    * Report Outs 3 In Week 15a, 15b
     * 
   * Final Exam
-    * Tuesday December 18th, 12 noon to 3pm, Olin 303
+    * Monday  December 17th, 12 noon to 3pm, Olin 313
 
 
 #### Textbooks
