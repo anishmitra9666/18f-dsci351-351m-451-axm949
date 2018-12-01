@@ -1,0 +1,615 @@
+---
+title: 'CWRU DSCI351-451: ISLR4 Classification'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+ 
+ \setcounter{section}{12}
+ \setcounter{subsection}{2}
+ \setcounter{subsubsection}{1}
+ 
+ <!-- 
+ How to make comments inside Rmarkdown
+# Script Name: My class notes template for Fall 2016
+# Purpose: This is a template Rmd file to start a new class from
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - Filename.Rmd - Roger French started this blank Rmd script
+-->
+
+<!-- Or on a single line like this -->
+ 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Chapter 4 Lab: Logistic Regression, LDA, QDA, and KNN
+
+We'll be using the glm package for "Fitting Generalized Linear Models"
+
+  + glm is used to fit generalized linear models, 
+    + specified by giving a symbolic description of the linear predictor and 
+    + a description of the error distribution.
+
+#### The Stock Market Data
+
+Load the stock market data, thats in the ISLR package, and get familiar with it.
+
+```{r}
+library(ISLR)
+names(Smarket)
+```
+
+How big is it?
+
+```{r}
+dim(Smarket)
+```
+
+Get a descriptive statistics summary
+
+```{r}
+summary(Smarket)
+```
+
+Explore the dataset with a pair-wise correlation plot
+
+```{r}
+pairs(Smarket)
+```
+
+Get a better colored plot by the direction of the market from the prio day
+
+```{r}
+pairs(Smarket, col = Smarket$Direction)
+```
+```{r}
+library(ggplot2)
+library(GGally)
+ggcorr(Smarket)
+```
+
+
+```{r}
+ggpairs(Smarket)
+```
+
+Check the correlation coefficients in the data
+
+```{r}
+# cor(Smarket)
+```
+
+But column 9 is not numeric, its character string of market direction Up or Down, so remove it when calculating the correlation coefficients.
+
+```{r}
+cor(Smarket[,-9])
+```
+
+```{r}
+attach(Smarket)
+plot(Volume)
+```
+
+#### Logistic Regression
+
+Lets do a logistic regression model of 
+
+  + the Market Direction 
+    - (categorical variable, so its one class and has two values) 
+  + versus the lag varaibles and volume.  
+
+And we say there is a binomial probability distribution.
+
+##### The binomial distribution
+
+In probability theory and statistics, the [binomial distribution](https://en.wikipedia.org/wiki/Binomial_distribution) 
+
+  + with parameters n and p is the discrete probability distribution 
+    - of the number of successes 
+    - in a sequence of n independent yes/no experiments, 
+    - each of which yields success with probability p. 
+  + A success/failure experiment 
+    - is also called a Bernoulli experiment or Bernoulli trial; 
+  + when n = 1, the binomial distribution is a Bernoulli distribution. 
+  + The binomial distribution is the basis 
+    - for the popular binomial test of statistical significance.
+
+The binomial distribution is frequently used to model 
+
+  + the number of successes in a sample of size n drawn 
+  + WITH replacement from a population of size N. 
+
+If the sampling is carried out WITHOUT replacement, 
+
+  + the draws are not independent and 
+  + so the resulting distribution is a hypergeometric distribution, 
+    - not a binomial one. 
+    
+However, for N much larger than n, 
+
+  - the binomial distribution is a good approximation, and widely used.
+
+##### Back to our logistic regression modeling
+
+So lets fit our logistic regression model, 
+
+  - using the glm command 
+  - and look at the summary.
+
+```{r}
+glm.fit <- glm(Direction~Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,data = Smarket,family = binomial)
+summary(glm.fit)
+```
+
+We get 
+
+  - the coefficents, 
+  - the Std. Errors, 
+  - the z-values and 
+  - the p-values
+
+You'll see that, from the p-values, 
+
+  - none of the coefficients are significant
+  - This isn't suprising, the variables may be correlated
+    + but the variables don't look correlated
+
+We can look at the coefficents
+
+```{r}
+coef(glm.fit)
+summary(glm.fit)$coef
+summary(glm.fit)$coef[,4]
+```
+
+We can make predictions from the model 
+
+  - using the predict function.
+
+We'll tell it the type is response, 
+
+  0 and be looking for the probability of next day's market direction
+
+```{r}
+glm.probs <- predict(glm.fit,type = "response")
+```
+
+The probabilities glm.probs 
+
+  - come out close to 50% as we'd expect
+
+We can break up the predictions into 10 grouping
+
+And then classify them into 
+
+  + Up if above 0.50 
+  + or Down if below 0.50. 
+
+So that we can see the market direction behavior. 
+
+```{r}
+glm.probs[1:10]
+contrasts(Direction)
+glm.pred <- rep("Down",1250)
+glm.pred[glm.probs > .5] = "Up"
+table(glm.pred,Direction)
+```
+
+So the table gives our correct predictions on the diagonal.
+
+  - And our wrong predictions on the off-diagonal.
+  - So the off-diagonal results are mistakes for our model. 
+
+And there are a lot of these wrong predictions by our model.
+
+And we have gotten 
+
+```{r}
+(507 + 145)/1250
+mean(glm.pred == Direction)
+```
+
+So you can see that we got 52.16% of the market predictions correct
+
+  - With our Logistic Prediction model.  
+
+##### Lets make a training and test datasets and try to fit better models
+
+We want to have the training be the larger dataset
+
+  - And the test dataset is smaller in size.
+
+Lets take the data before 2005 as our training set
+
+  - train is a vector of logicals, 
+  - where for year<2005, 
+    - train is false 
+
+##### Now lets fit our glm model to the training data
+
+And now we'll only fit our model to the subset = train
+
+  + and again using all 5 Lag predictor variables
+    + subset=train is our training data
+    + subset=!train, where ! means "NOT", is our test set
+
+We'll check the size of the training set and inspect it a bit.
+
+```{r}
+train <- (Year < 2005)
+Smarket.2005 <- Smarket[!train,]
+dim(Smarket.2005)
+Direction.2005 <- Direction[!train]
+glm.fit <- glm(Direction~Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,data = Smarket,family = binomial,subset = train)
+```
+
+So now we have fitted a new glm logistic regression model 
+
+  - to the training data
+
+Now we'll do prediction using this model 
+
+  - on the testing "!train" data  
+
+Direction.2005 is the response variable
+
+
+```{r}
+glm.probs <- predict(glm.fit,Smarket.2005,type = "response")
+glm.pred <- rep("Down",252)
+glm.pred[glm.probs > .5] = "Up"
+table(glm.pred,Direction.2005)
+mean(glm.pred == Direction.2005)
+mean(glm.pred != Direction.2005)
+```
+
+This time our predictive model is worse
+
+  + being correct only 48% of the time
+  + when tested on our test dataset
+
+We probably are overfitting
+
+  + Model optimism is too high
+  + And our predictions are not sensible for the test dataset
+
+Demonstrates the importance of training and testing
+
+  + So as to evaluate the predictive capability of a model
+
+##### So lets try fitting a simpler model
+
+Lets try fitting our glm model to only the Lag1 and Lag2 predictors
+
+```{r}
+glm.fit <- glm(Direction~Lag1 + Lag2,data = Smarket,family = binomial,subset = train)
+glm.probs <- predict(glm.fit,Smarket.2005,type = "response")
+glm.pred <- rep("Down",252)
+glm.pred[glm.probs > .5] = "Up"
+table(glm.pred,Direction.2005)
+mean(glm.pred == Direction.2005)
+(35 + 106)/(35 + 35 + 76 + 106)
+predict(glm.fit,newdata = data.frame(Lag1 = c(1.2,1.5),Lag2 = c(1.1,-0.8)),type = "response")
+```
+
+Now our predictive model is best to date
+
+  + getting it right 55.95% of the time
+  + so the correct classification rate of 55.95
+
+```{r}
+summary(glm.fit)
+```
+
+So still nothing became significant even with the simpler model
+
+  + all the p-values say not significant
+
+#### Linear Discriminant Analysis
+
+So lets use the ISLR and MASS pacakges, 
+
+  + using the require (same as the library command)
+  + to load the ISLR and MASS packages
+
+We'll do Linear Discriminant Analysis (LDA)
+
+```{r}
+require(MASS)
+?lda
+```
+ 
+So lets use our stock market data (Smarket)
+
+  + the response will be the direction the market took on a day
+  + And the predictors will be the returns on the previous two days
+
+The response is direction
+
+We'll use the subset=train where train is the data before 2005
+
+  + And then we'll make predictions for the year 2005
+
+```{r}
+lda.fit <- lda(Direction~Lag1 + Lag2,data = Smarket,subset = train)
+lda.fit
+```
+
+In the summary of lda.fit We see
+
+  + the formula used for the model
+  + a summary of the LDA
+  + We see roughly 50% ups and downs
+  + We see the group means for the ups and downs
+
+Then the LDA coefficients, the linear function to separate the two groups
+
+```{r}
+plot(lda.fit)
+```
+
+The two histograms of the ups and downs
+
+  + look pretty much the same
+
+Next lets check our prediction for year 2005
+
+```{r}
+lda.pred <- predict(lda.fit, Smarket.2005)
+names(lda.pred)
+lda.class <- lda.pred$class
+```
+
+Now lets check our
+
+  + correct predictions (on the diagonal)
+  + incorrect predictions (the off diagonal results)
+
+And see how good our prediction is.
+
+We'll look at lda.class, to see 
+
+  - the predicted up/down 
+  - vs. the actual in the testing dataset.
+
+When we compare the predictions to the actual up/down results
+
+  + we'll get true falses
+  + or 0 and 1's
+
+And we can calculate the mean, to get our prediction accuracy
+
+So we got 56% correct prediction
+
+  + 0.56 could be a useful edge.
+
+```{r}
+table(lda.class,Direction.2005)
+mean(lda.class == Direction.2005)
+sum(lda.pred$posterior[,1] >= .5)
+sum(lda.pred$posterior[,1] < .5)
+lda.pred$posterior[1:20,1]
+lda.class[1:20]
+sum(lda.pred$posterior[,1] > .9)
+```
+
+#### Quadratic Discriminant Analysis
+
+Here we can do the same Discriminant Analysis
+
+But using a Quadratic DA, instead of the LDA.
+
+  + Using the gda function
+
+
+```{r}
+qda.fit <- qda(Direction~Lag1 + Lag2,data = Smarket,subset = train)
+qda.fit
+qda.class <- predict(qda.fit,Smarket.2005)$class
+table(qda.class,Direction.2005)
+mean(qda.class == Direction.2005)
+```
+
+Now we are able to predict correctly 59% of the Up/Down categories
+
+  + Of the market
+  + from the Lag1 and Lag2 data of prior years
+
+So QDA worked better in this case.
+
+##### Splitting Data into Training/Testing datasets
+
+Is very important
+
+  + So as we try different statistical learning methods
+  + We can evaluate their performance
+  + And Identify the best method 
+  + For use with the data, and the specific problem.
+
+
+#### K-Nearest Neighbors
+
+So now lets try K-nearest neighbors method on our stock market data
+
+## How does knn compare to kmeans?
+
+```{r}
+library(class)
+?kmeans
+?knn
+```
+
+knn is different from the simpler k-means we used in class before.
+
+[knn vs. k-means](http://stats.stackexchange.com/questions/56500/what-are-the-main-differences-between-k-means-and-k-nearest-neighbours)
+
+These are completely different methods. 
+
+  + The fact that they both have the letter K in their name is a coincidence. 
+
+K-means is a clustering algorithm 
+
+  - that tries to partition a set of points 
+    - into K sets (clusters) 
+  - such that the points in each cluster 
+    - tend to be near each other. 
+
+It is an unsupervised classification method 
+
+  - because the points have no external classification. 
+
+K-nearest neighbors is a classification (or regression) algorithm 
+
+  - that in order to determine the classification of a point, 
+  - combines the classification of the K nearest points. 
+
+It is supervised because 
+
+  - you are trying to classify a point 
+  - based on the known classification of other points.
+
+Ahh, so a big difference
+
+  + k-means is unsupervised
+  + knn is supervised
+
+So we want to keep our understanding of the types of approaches we can use.
+
+knn is very simple, but works quite well much of the time
+
+You should always try knn
+
+##### Now on to trying knn
+
+Notice that there is no formula given for knn
+
+Setup the training and testing datasets
+
+set the seed, so as to get reproducible results
+
+knn wants to know 
+
+  - the training, testing datasets 
+    - and variables and the number k
+  + the k = 1 says we want 1 nearest neighbor classification
+  + to classify a new observation, 
+    - use the closest (in euclidian distance) point
+  + and classify the same
+
+We'll use Lag1 and Lag2 like the last model
+
+```{r}
+train.X <- cbind(Lag1,Lag2)[train,]
+test.X <- cbind(Lag1,Lag2)[!train,]
+train.Direction <- Direction[train]
+set.seed(1)
+knn.pred <- knn(train.X,test.X,train.Direction,k = 1)
+table(knn.pred,Direction.2005)
+(83 + 43)/252
+```
+
+So you see that with k=1, we got 0.5, 
+
+  + so the knn was useless
+  + no better than flipping a coin
+  + we need to use more nearby points to get some sample information
+
+##### So lets try k = 3
+
+So lets try checking 3 nearbye points as we classify a new point
+
+```{r}
+knn.pred <- knn(train.X,test.X,train.Direction,k = 3)
+table(knn.pred,Direction.2005)
+mean(knn.pred == Direction.2005)
+```
+
+Not bad, now we got 53.6% classification right
+
+##### What you would do in a real knn classificatiton problem
+
+Try to fit knn models 
+
+  + with an automated set of different k values
+
+And evaluate for the set of knn models
+
+  + To determine what the best peforming k value, you should use, is. 
+
+#### An Application to Caravan Insurance Data
+
+So here is an unannotated set of working code.
+
+For the Caravan dataset
+
+  + The data contains 5822 real customer records. 
+  + Each record consists of 86 variables, 
+    - containing sociodemographic data (variables 1-43) 
+    - and product ownership (variables 44-86). 
+  + The sociodemographic data is derived from zip codes. 
+  + All customers living in areas with the same zip code 
+    - have the same sociodemographic attributes. 
+    - Variable 86 (Purchase) indicates whether the customer 
+    - purchased a caravan insurance policy.
+  + Further information [on the individual variables can be obtained at](http://www.liacs.nl/~putten/library/cc2000/data.html)
+
+
+And its modeld using knn and glm
+
+```{r}
+dim(Caravan)
+?Caravan
+attach(Caravan)
+summary(Purchase)
+348/5822
+standardized.X <- scale(Caravan[,-86])
+var(Caravan[,1])
+var(Caravan[,2])
+var(standardized.X[,1])
+var(standardized.X[,2])
+test <- 1:1000
+train.X <- standardized.X[-test,]
+test.X <- standardized.X[test,]
+train.Y <- Purchase[-test]
+test.Y <- Purchase[test]
+set.seed(1)
+knn.pred <- knn(train.X,test.X,train.Y,k = 1)
+mean(test.Y != knn.pred)
+mean(test.Y != "No")
+table(knn.pred,test.Y)
+9/(68 + 9)
+knn.pred <- knn(train.X,test.X,train.Y,k = 3)
+table(knn.pred,test.Y)
+5/26
+knn.pred <- knn(train.X,test.X,train.Y,k = 5)
+table(knn.pred,test.Y)
+4/15
+glm.fit <- glm(Purchase~.,data = Caravan,family = binomial,subset = -test)
+glm.probs <- predict(glm.fit,Caravan[test,],type = "response")
+glm.pred <- rep("No",1000)
+glm.pred[glm.probs > .5] = "Yes"
+table(glm.pred,test.Y)
+glm.pred <- rep("No",1000)
+glm.pred[glm.probs > .25] = "Yes"
+table(glm.pred,test.Y)
+11/(22 + 11)
+```
+
+
+#### Cites
+
++ Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. 1st ed. 2013, Corr. 5th printing 2015 edition. Springer Texts in Statistics. New York: Springer, 2013.
+
