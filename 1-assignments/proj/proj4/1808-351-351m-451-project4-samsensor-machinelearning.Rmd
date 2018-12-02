@@ -142,7 +142,7 @@ library(rpart)
 
 Plot the model with plot() and text() 
 
-  - and plot the error per split with the rsp.rpart() function
+  - and plot the error per split with the rsq.rpart() function
     - the splits in the trees show the level of branches in the tree
 
 ```{r}
