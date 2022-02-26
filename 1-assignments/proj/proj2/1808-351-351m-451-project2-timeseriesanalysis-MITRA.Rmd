@@ -1,0 +1,331 @@
+---
+title: 'CWRU DSCI351-451: Semester Project 2- Time Series Analysis'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+    highlight: tango
+  html_document:
+    toc: yes
+urlcolor: blue
+---
+
+<!--
+# Script Name: 1710-dsci351-451-project2.Rmd
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+
+\setcounter{section}{2}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
+
+# Semester Project 2: Time Series Analysis
+
+Time series are a common type of data, 
+
+  - consisting of measurements that are continuous over a time range. 
+
+In this project we will be using classical decomposition 
+
+  - to perform analysis on a time series.
+
+First as an introduciton to decomposition we will have a quick example.
+
+## Problem 1
+
+  - What is the decomposition of a timeseries?
+  - The AirPassangers data set of airline passangers every month for 12 years
+
+```{r}
+library(datasets)
+air <- as.data.frame(AirPassengers)
+```
+
+Answer: The decomposition of a time series is a statistical technique used to deconstruct the time series into its various constituents. Here, each component is representative of an underlying class of patterns. The time series can be decomposed into the trend component (reflection of the long-term progression of the series), the cyclical component (repeated but non-periodic fluctuations), the seasonsal component (seasonality) and the irregular component (noise).
+
+  - Plot the total time series of air passangers 
+  - What do you notice about the plot?
+
+```{r}
+# Plotting the time series
+plot(air, main = "Total time series of all air passengers",
+     ylab = "Air Passengers in their thousands", xlab = "Time measured in   years")
+```
+
+  - Use the ts() function in base R 
+    - to define AirPassangers as a time series with a yearly trend 
+  - If the data is taken monthly, 
+    - what will the frequency (points per season) of a yearly season be? 
+
+```{r}
+
+# Defining AirPassengers as a time series
+air.time.series <- ts(air, frequency = 12, start = c(1949,1), end = c(1960,12))
+
+```
+
+Answer: Since the data is taken monthly and there are 12 months in a yearly season, the frequency is 12.
+
+  - Use the decompose() function 
+    -to demcompose the time series and remove the seasonality
+  - The type for this time series is multiplicative
+  - Plot the decomposed time series, what do you notice about the trend?
+
+```{r}
+# Decomposing the time series
+air.decompose <- decompose(air.time.series, type = c("multiplicative"))
+
+# Plotting the decomposed time series after removing seasonality
+plot(air.decompose$random + air.decompose$trend,
+     main = "Decomposed time series after removing seasonality",
+     xlab = "Air passengers in their Thousands", ylab = "Time in years")
+
+```
+Answer: The trend is increasing which suggests that more people were travelling by air as the years went by.
+  - Isolate the trend and plot the trend on top of the raw data with the seasonality included
+  - How well does the trend represent the data?
+
+```{r}
+# Plotting the trend isolated on top of the raw data
+plot(air.time.series, main = ("Trend on top of the raw data with seasonality included"),
+     xlab = ("Time in years"), ylab = ("Air Passengers in their thousands"))
+
+# Adding a trend line to plot
+lines(air.decompose$trend, col = "red")
+
+# Adding a legend
+legend("topleft", legend = c(c("Trend"), c("Raw Data")), lty = c(1), col = c(c("red"), c("black")))
+```
+Answer: The trend represents the data extremely well.
+## Problem 2
+
+Now lets try this with a real world time series. 
+We'll be using one month of power and weather data from a solar power plant.
+The data set variables are as follows:
+
+  - time: The timestamp at which the data was taken
+  - ghir: Global Horizontal Irradiance from a sensor at the site, 
+    - the power from the sunlight over an area normal to the surface of the earth $(Watts/m^2)$
+  - iacp: The AC power from the power plant $(kW)$
+  - temp: The air temperature $(Celsius)$
+  - ghi_solargis: The Global Horizontal Irradiance, not from a sensor, 
+    - but predicted using weather modeling $(Watts/m^2)$
+  - clear: A logical indicating whether the sky was "clear" during measurement, 
+    - determined by comparing the ghi and ghi_solargis data
+  - ratio: the ratio of the Global Horizontal Irradiance 
+    - and the Plane of Array Irradiance (the irradiance normal to the surface of a tilted module)
+
+The power from solar panels is dependant on the irradiance hitting it, 
+
+  - so a power reading is often meaningless without a corresponding irradiance measurement.
+
+It is useful to have multiple sources of irradiance measurements. 
+
+Sensors on the ground are useful because 
+
+  - they strongly represent the irradiance that is hitting the module; 
+  - however, sensors can begin to drift if not cleaned or calibrated properly. 
+  - An unstable sensor can render an entire data set useless.
+
+To combat this, we also have irradiance data from SolarGIS, 
+
+  - a company that uses satellite images to model and predict 
+  - the irradiance at the surface of the earth. 
+
+  - Plot the irradiance and power for the first week of data, 
+    - how does the irradiance look compared to 
+      - what you would expect from the trend of sunlight? 
+    - How well does the power and irradiance match up?
+
+```{r}
+# Loading in the library dplyr
+library(dplyr)
+
+# Readng the irradiance data
+irradiancedata <- data.table::fread("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj2/1808-351-351m-451-project2-data-final.csv")
+
+# Estimating what the data looks like
+head(irradiancedata)
+
+# I got these numbers since it appears to be data taken at 15-min intervals. Therefore in a day, there are 24 x 4 = 96 data points. Therefore for a week, we have 96 x 7 = 672 data points. This is why we are indexing 672 data points for a week's data.
+
+# Plotting sensor irradiance for the first week of data
+irradiancedata %>% 
+  slice(1:672) %>%  # Slice the first week's data
+  select(time, ghir) %>%
+  mutate(time = factor(as.character(time))) %>% 
+  plot( main = "Sensor irradiance vs. Time", cex.axis = 0.6,
+        ylab = expression("Irradiance in " ~ W/m^{2}),
+        xlab = "Time and date")
+
+# Plotting SolarGIS irradiance for the first week of data
+irradiancedata %>% 
+  slice(1:672) %>%  # Slice the first week's data
+  select(time, ghir) %>%
+  mutate(time = factor(as.character(time))) %>% 
+  plot( main = "SolarGIS irradiance vs. Time", cex.axis = 0.6,
+        ylab = expression("Irradiance in " ~ W/m^{2}),
+        xlab = "Time and date")
+
+# Plotting power for the first week of data
+irradiancedata %>% 
+  slice(1:672) %>%  # Slice the first week's data
+  select(time, iacp) %>%
+  mutate(time = factor(as.character(time))) %>% 
+  plot( main = "Power vs. Time", cex.axis = 0.6,
+        ylab = "Power in kW",
+        xlab = "Time and date")
+```
+
+Answers: It is known that sunlight varies across the day, as it increases as the sun rises untill noon and then decreases until the sun sets and then becomes dark. This periodicity is shown in the data on irradiance as well since we see periodic patterns in both its increase and decrease. The trend, however, for sunlight over a week's  period (even though a week is a short period for something like this) in June would make us expect that there would be a negligible change in sunlight. This agrees with the trend of more or less no change in irradiance either. They appear to be in phase as well.
+
+- Use the ts() functions and the stlplus() function from the stlplus package 
+
+  - to decompse the sensor and SolarGIS irradiance and the power 
+    - for the whole month. 
+  -  Plot each of the decompositions, what do you notice?
+
+```{r}
+# think carefully about the frequency you'll need to define for this data
+# what is the seasonal component to this data and how nay data points make up a season?
+# use s.window = "periodic" for the stlplus function
+library(stlplus)
+?stlplus()
+
+# The start and end of each month is given in the yyyymmdd format
+
+# We choose 96 as a frequency since in 15-minute intervals there are 24x4=96 data points in a day and the seasonal component is a day.
+
+# Defining the time series for sensor irradiance
+sensorirradiance <- ts(irradiancedata$ghir, frequency = 96,
+             start = c(20120601, 1),
+             end = c(20120630,96))
+
+# Define time series for SolarGIS irradiance
+solargisirradiance <- ts(irradiancedata$ghi_solargis, frequency = 96,
+               start = c(20120601, 1), end = c(20120630,96))
+
+# Defining time series for power
+power <- ts(irradiancedata$iacp, frequency = 96,
+            start = c(20120601, 1), end = c(20120630,96))
+
+# Decomposing time series for sensor irradiance
+sensorirradiance.decompose <- stlplus(sensorirradiance, s.window = "periodic")
+
+# Decomposing time series for SolarGIS irradiance
+solargisirradiance.decompose <- stlplus(solargisirradiance, s.window = "periodic")
+
+# Decomposing time series for power
+power.decompose <- stlplus(power, s.window = "periodic")
+
+# Plotting decomposed time series data for sensor irradiance
+plot(sensorirradiance.decompose, main = "Decomposed time series for sensor irradiance",
+     xlab = "Date", ylab = expression("Irradiance in " ~ W/m^{2}))
+
+# Plotting decomposed time series data for SolarGIS irradiance
+plot(solargisirradiance.decompose, main = "Decomposed time series for SolarGIS irradiance",
+     xlab = "Date", ylab = expression("Irradiance in " ~ W/m^{2}))
+
+#Plotting decomposed time series data for power
+plot(power.decompose, main = "Decomposed time series for Power",
+     xlab = "Date", ylab = "Power in kW")
+
+```
+
+Answer: The seasonalities for the irradiance and power seem to be in phase as we would expect. There don't seem to be any significant changes (they seem to be more or less constant) in the irradiance or power over a one-month period either.
+
+  - Isolate the trends for the 3 time series you just decomposed 
+    - and build a linear model for each one.
+  - Compare the models to each other, how are they different?
+
+```{r}
+# Isolating trends
+sensorirradiance.trend <- sensorirradiance.decompose$data$trend
+solargisirradiance.trend <- solargisirradiance.decompose$data$trend
+power.trend <- power.decompose$data$trend
+
+# Building linear models
+sensorirradiance.trend.lm <- lm(sensorirradiance.trend ~ sensorirradiance.decompose$time)
+solargisirradiance.trend.lm <- lm(solargisirradiance.trend ~ solargisirradiance.decompose$time)
+power.trend.lm <- lm(power.trend ~ power.decompose$time)
+
+# Below we are visualizing models to compare them
+
+# Plotting for sensor irradiance
+plot(sensorirradiance.decompose$time, sensorirradiance.trend, 
+     main = "Linear model for sensor irradiance for 1 month", xlab = "Date", 
+     ylab = expression("Irradiance / " ~ W/m^{2}))
+
+# Adding a legend
+legend("bottomright", legend = c(c("Linear fit"), c("Actual Data")), 
+       lty = c(1), col = c(c("red"), c("black")))
+
+# Adding a linear fit
+abline(sensorirradiance.trend.lm, col = "red")
+
+# Plotting for SolarGIS irradiance
+plot(solargisirradiance.decompose$time, solargisirradiance.trend,
+     main = "Linear model for SolarGIS irradiance for 1 month", xlab = "Date",
+     ylab = expression("Irradiance / " ~ W/m^{2}))
+
+# Adding a legend
+legend("bottomright", legend = c(c("Linear fit"), c("Actual Data")), lty = c(1),
+       col = c(c("red"), c("black")))
+
+# Adding a linear fit
+abline(solargisirradiance.trend.lm, col = "red")
+
+# Plotting for power
+plot(power.decompose$time, power.trend, main = "Linear model for power for 1 month",
+     xlab = "Date", ylab = expression("Power / kW"))
+
+# Adding a legend
+legend("bottomright", legend = c(c("Linear fit"), c("Actual Data")), lty = c(1),
+       col = c(c("red"), c("black")))
+
+# Adding a linear fit
+abline(power.trend.lm, col = "red")
+
+# Printing information for the models
+print(sensorirradiance.trend.lm)
+print(solargisirradiance.trend.lm)
+print(power.trend.lm)
+```
+
+Answer: The sensor irradiance and SolarGIS irradiance both have increasing trends since they have positive coefficients which correspond to slope. From the intercepts, we can see that sensor irradiance starts out higher than SolarGIS irradiance but from the magnitude of the coefficient corresponding to their slopes we can see that SolarGIS has a higher slope and so increases more over time which is why it ends up higher than the sensor irradiance. For the power trend, the coefficient that corresponds to the slope is very small indicating the the power output is more or less constant.
+
+  - Solar panel degradation leads to less power output over time 
+    - at the same irradiance conditions.
+  - Based on the linear models you found for the trends of power and irradiance, 
+    - is this system degrading over time?
+  - How do the sensor GHI and the SolarGIS GHI compare to power?
+
+Answer: According to trend results established earlier, we can conclude that power is in phase with irradiance or that the trends for power and irradiance are matching. We should thus expect an increase in power while observing an increase in the irradiance. From the visualizations of the linear models above, however, we notice that while the irradiance is increasing across the month, the power seems unchanged (the coeffiecent for the slope from the linear model for the power trend is tiny) . We should also expect that the power to also increase along with the increase in irradiance if solar panel degradation did not lead to less power output over time. The key is that solar panel degradation leads to less power output over time at the same conditions for irradiance. Since the irradiance is increasing, the associated increase in power cancels out the reduction in power output over time due to solar degradation resulting in no net change in power output. Therefore, we can conclude that the system is degrading over time.
+
+Answer: As mentioned earlier, both the SolarGIS GHI as well as sensor GHI have positive or increasing trends, and neutralize the effect of power loss due to solar panel degradation causing a net trend of no change for the power. From results established earlier, we know that both SolarGIS and sensor GHI are in phase with power or that they all have matching trends when solar panel degradation is not in the picture.
+
+
+
+#### Links
+ 
+http://www.r-project.org 
+
+http://rmarkdown.rstudio.com/  
+
+<!--
+# Keep a complete change log history at bottom of file.
+# Complete Change Log History
+# v0.00.00 - 1405-07 - Nick Wheeler made the blank script
+##########
+
