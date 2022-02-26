@@ -1,0 +1,473 @@
+---
+title: 'CWRU DSCI351-451: Project 4 - SamSensor Supervised Machine Learning'
+author: "Roger H. French, JiQi Liu"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 6
+  html_document:
+    font-size: 10em
+    self_contained: yes
+    toc: yes
+urlcolor: blue
+---
+
+<!--
+# Script Name: 1711-dsci351-451-project4.Rmd
+# Authors: Roger H. French
+# License: Creative Commons Attribution-ShareAlike 4.0 International License.
+##########
+# Latest Changelog Entires:
+# v0.00.01 - 1501cwru-dsci-NAMEIT.RMD - Roger French started this blank Rmd
+##########
+
+# Rmd code goes below the comment marker!
+-->
+
+
+\setcounter{section}{4}
+\setcounter{subsection}{1}
+\setcounter{subsubsection}{0}
+
+#### Semester Project 4: SamSensor Supervised Machine Learning (ML)
+
+[Machine learning](https://en.wikipedia.org/wiki/Portal:Machine_learning) 
+
+  - is a powerful tool for data analysis, 
+  - allowing for modeling and prediction 
+    - of complex data structures.
+  
+In this lab we will be using 
+
+  - the rotational and acceleration data 
+    - from Samsung Galaxy S3 cell phones
+    - from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/human+activity+recognition+using+smartphones)
+    - a [YouTube about the data is here](https://www.youtube.com/watch?v=XOEN9W05_4A)
+  - to predict what activity people holding the phones are doing.
+  
+This data contains all of the variables from the phone 
+
+  - and the "activity" column that shows 
+    - what activity was being done at each measurement. 
+    
+The features and features_info files 
+
+  - can help you understand the variables.
+  
+We will be focusing on 3 machine learning methods, 
+  
+  - [Regression (or Decision) Tree](https://en.wikipedia.org/wiki/Decision_tree_learning), 
+    - using the rpart package
+  - [Random Forest](https://en.wikipedia.org/wiki/Random_forest),  
+    -  using the randomForest package
+  - [Support Vector Machine](https://en.wikipedia.org/wiki/Support_vector_machine),
+    - using the e1071 package.
+
+----------------------
+
+##### Question 1: Supervised and Unsupervised Machine Learning
+
+Explain supervised and unsupervised machine learning in your own words.
+
+ANSWER: Supervised machine learning is when we know the outcomes we are trying to predict and unsupervised machine learning is when we do not.
+
+Read in the SamsungData.rda data for this lab, 
+
+  - how many predictors and responses are there, 
+  - how many different activities are there 
+  - and what are they?
+  
+  
+```{r}
+# Loading in the data
+load("H:/Git/18f-dsci351-351m-451-axm949/1-assignments/proj/proj4/SamsungData.rda")
+# Displaying the number of predictors
+sprintf("Predictors: %i", ncol(samsungData))
+# Displaying the number of responses
+sprintf("Responses: %i", nrow(samsungData))
+# Displaying the number of different activities
+sprintf("Different activities: %s", length(unique(samsungData$activity)))
+# Creating a variable for activities
+activities <- ""
+# Looping through the different activities
+for (i in unique(samsungData$activity)) {
+  # Removing the comma after the last and before the first activity
+  if (which(unique(samsungData$activity) == i) == 1 | which(unique(samsungData$activity) == i) == length(samsungData$activity)) {
+    activities <- paste0(activities, i)
+  } else {
+    # Adding activities and seperating them with comma and space
+    activities <- paste(activities, i, sep = ", ")
+  }
+  
+}
+# Printing out the names of the activites
+sprintf("Activities are %s", activities)
+```
+
+You will need to split this data into training and testing datasets.
+
+  - use the caret package to do this splitting
+  - its a swiss army knife for accessing > 100 ML methods
+
+```{r}
+# Loading the library
+library(caret)
+# ??caret::caret
+# Setting a random seed so that our results are reproducible
+set.seed(123)
+# Creating a 80-20 split for training to testing
+inTrain <- createDataPartition(samsungData$activity, p = 0.8, list = FALSE)
+# Training
+training <- samsungData[inTrain,]
+# Testing
+testing <- samsungData[-inTrain,]
+```
+ANSWER:
+
+In your opinion, 
+
+  - is variable selection necessary for this data set 
+  - and if so can it be reasonably done by a human inferring 
+    - or assuming which variables are important?
+
+ANSWER: According to me, there are a lot of variables so we could benefit from variable selection as it reduces computation time and overfitting as well as simplying our model and avoiding dimensionality. It would be hard to do this by human inferring as there are too many variables and we don't have enough information about which variables are important.
+
+- Explain why this lab is supervised machine learning and not unsupervised
+
+ANSWER: This is because we know the outcome/activity we are trying to predict.
+
+
+----------------------
+
+##### Question 2: Data Cleaning and "-" in Column Names
+
+There have been some changes to R recently 
+
+  - and "-" can no longer be used in column names 
+  - without causing problems so we have to do some data cleaning
+
+Such is life for data scientists
+
+  - Edit the column names to format them better
+  - Replace all parentheses  and commas "(" ")" and "," with periods "." 
+  - Replace all dashes "-" with underscores "_"
+  - Regular expression (regex) can help you do this
+
+```{r}
+# For the training column names
+# Replacing the parentheses and commas with periods
+names(training) <- gsub("\\(|\\)|,", ".", names(training))
+# Replacing the dashes with underscores
+names(training) <- gsub("-", "_", names(training))
+
+# For the testing column names
+# Replacing the parentheses and commas with periods
+names(testing) <- gsub("\\(|\\)|,", ".", names(testing))
+# Replacing the dashes with underscores
+names(testing) <- gsub("-", "_", names(testing))
+
+# For the original data frame
+# Replacing the parentheses and commas with periods
+names(samsungData) <- gsub("\\(|\\)|,", ".", names(samsungData))
+# Replacing the dashes with underscores
+names(samsungData) <- gsub("-", "_", names(samsungData))
+```
+
+Lets build a simple Regression Tree 
+
+  - to try to predict the activity using the training data
+  
+Use the rpart() function from the rpart package 
+
+  - to build a basic regression tree, 
+  - be sure and keep this model, 
+  - we'll use it later
+
+```{r}
+# Loading the library
+suppressPackageStartupMessages(library(rpart))
+# ?rpart
+
+# Storing all the column names in one variable
+allcolumnnames <- names(training)
+# Creating a formula including all the variables
+formulaofallvariables <- as.formula(paste("activity ~", paste(allcolumnnames[!allcolumnnames %in% "activity"], collapse = " + ")))
+# Converting activity to factor type
+training$activity <- as.factor(training$activity)
+
+# Construct regression tree
+samsungregtree <- rpart(formulaofallvariables, data = training)
+
+```
+
+Plot the model with plot() and text() 
+
+  - and plot the error per split with the rsp.rpart() function
+    - the splits in the trees show the level of branches in the tree
+
+```{r}
+# Installing rpart.plot if not installed already
+listofpackages <- "rpart.plot"
+newpackages <- listofpackages[!(listofpackages %in% installed.packages()[,"Package"])]
+if(length(newpackages)) install.packages(newpackages)
+
+# Loading library
+suppressPackageStartupMessages(library(rpart.plot))
+# Plotting the tree
+prp(samsungregtree, cex = 0.75, digits = 9, varlen = 0)
+# Plotting the error and r-squared
+rsq.rpart(samsungregtree)
+```
+
+How many splits were there in your regresion tree and 
+
+  - does this make sense based on the number of activities?
+
+ANSWER: There are five splits which is one less than the number of activities. THis does make sense.
+
+Explain how someone could estimate the activity using this tree 
+
+  - if they had unlabled data
+
+ANSWER: With unlabelled data, clustering techniques would have to be used to categorize the data into different categories and these categories would be the different activities.
+
+
+----------------------
+
+##### Question 3: Regression Trees and Random Forest ML
+
+In your own words, 
+
+  - explain what a random forest is and 
+  - what is its relationship with regression trees 
+    - like the one you just fitted in Question 2?
+
+ANSWER: Random forests are a collection of decision trees. They basically make several decision trees by performing random subsets to create subtrees and then combining all of them together. Unlike decision trees, the randomization in random forests helps reduce the problem of overfitting as well by combining a bunch of decision trees.
+
+Use the randomForest function 
+
+  - in the randomForest package 
+  - to fit a model to the training data
+
+```{r}
+# Loading the library
+suppressPackageStartupMessages(library(randomForest))
+#?randomForest
+
+# Building a random forest model
+samsungrf <- randomForest(formulaofallvariables, data = training, nodesize = 20,
+                           importance = TRUE)
+```
+
+Show your results with the plot() and print() functions on the model, 
+
+  - explain the meaning of result.
+
+```{r}
+# Plot results
+plot(samsungrf)
+# Print results
+print(samsungrf)
+```
+
+ANSWER: There are 500 trees in the random forest. The plot depicts the error rates for each activity with the solid black line being the overall error. The error rate exponentially decreases as the number of trees increases. However, it levels after a certain value. In other words, after about 100 trees theerror rate's change is negligible. The confusion matrix provides information about the errors and performance of the model.  OOB is the out-of-bag error that is a measure of the prediction error.
+
+
+Use the importance() function 
+
+  - to find the most important variable as determined by the random forest
+  - what was this variable measuring?
+  
+ANSWER: We found that the most important variable is tGravityAcc_min.._X after performing the steps below. It measures the minimum acceleration due to gravity in the X direction.
+
+Using ggplot and geom_density, 
+
+  - plot the distribution of this variable 
+    - for each activity in one plot, 
+  - can you explain why this variable is important in classification?
+
+```{r}
+for (i in 1:ncol(samsungData)) {
+  if (names(samsungData)[i] %in%
+      names(samsungData)[duplicated(names(samsungData))]) {
+    names(samsungData)[i] <- paste0(names(samsungData)[i], "_dupl")
+  }
+}
+
+for (i in 1:ncol(samsungData)) {
+  if (names(samsungData)[i] %in%
+      names(samsungData)[duplicated(names(samsungData))]) {
+    names(samsungData)[i] <- paste0(names(samsungData)[i], "_dupl")
+  }
+}
+```
+
+
+```{r}
+# Finding the index at which the maximum value occurs
+mostimportantindex <- which.max(importance(samsungrf, type = 2))
+# Finding the corresponding variable
+mostimportantvariable <- names(importance(samsungrf)[,1][mostimportantindex])[1]
+# Print result
+sprintf("Most important variable: %s", mostimportantvariable)
+
+# Plotting density
+suppressPackageStartupMessages(library(tidyverse))
+
+# Making a density plot
+samsungData %>%
+  ggplot(aes(eval(parse(text = mostimportantvariable)))) +
+  geom_density(aes(fill = activity), alpha = 0.25) +
+  ggtitle(paste("Density distribution for", mostimportantvariable)) +
+  xlab(mostimportantvariable)
+
+```
+
+Were there any activities 
+
+  - that the model had more trouble distinguishing, 
+  - if so does is make sense that they were hard to distinguish?
+
+ANSWER:From the confusion matrix, we see that the model had trouble distinguishing between standing and sitting, which makes sense, since in both cases, the person is stationary. On fewer occasion, the model also had little trouble distinguishing between walking, walking up and walking down, which makes sense because all 3 are different forms of walking.
+
+What was the error of the random forest 
+
+  - and how did it compare to the regression tree?
+
+ANSWER: The (OOB) error of the random forest was 2.19%, which was less than that of the regression tree.
+
+
+----------------------
+
+##### Question 4: Support Vector Machine ML Model
+
+In your own words 
+
+  - explain what a support vector machine is.
+
+ANSWER: A support vector machine is a supervised binary classification algorithm. This means if we have some points in an N dimensional space, the support vector machine will create a (N-1) dimensional hyperplane to seperate the points into two groups. When new points are added, they predict the category to which they belong based on which side of the hyperplane they lie on. Multiclass classification is achieved when several binary classifiers are used in a loop.
+
+Use the e1071 package 
+
+  - [I don't know why they named it that either][1] 
+  - to build an SVM model on the data set
+
+```{r}
+# Loading the library
+suppressPackageStartupMessages(library(e1071))
+#??e1071
+
+
+# Storing all the column names in one variable
+allcolumnnames <- names(training)
+# Creating a formula including all the variables
+formulaofallvariables <- as.formula(paste("activity ~", paste(allcolumnnames[!allcolumnnames %in% "activity"], collapse = " + ")))
+# Build the svm model
+samsungsvm <- svm(formulaofallvariables, data = training)
+```
+
+----------------------
+
+##### Question 5: Training and Testing Your 3 ML Models
+
+Read in the testing data and 
+
+  - use the predict() function 
+    - to predict the activity of the test data with
+      - your regression tree, 
+      - your random forest, 
+      - and your SVM model
+
+```{r}
+# Predicting for the support vector machine model
+svmprediction <- predict(samsungsvm, testing)
+# Predicting for the Random forests model
+randomforestprediction <- predict(samsungrf, testing)
+
+# Defining a function to predict our regression tree
+predictRegressionTree <- function(model, testing) {
+  # Predefining an array that will store the predictions
+  prediction <- rep(NULL, nrow(testing))
+  # Implementing a decision tree
+  for (i in 1:nrow(testing)) {
+    if (testing$tGravityAcc_min.._X[i] < 0.0961842432) {
+      prediction[i] <- "laying"
+    } else if (testing$fBodyAcc_mean.._X[i] < -0.68451671) {
+      if (testing$tGravityAcc_mean.._Y[i] >= -0.083010635) {
+        prediction[i] <- "sitting"
+      } else {
+        prediction[i] <- "standing"
+      }
+    } else if (testing$tBodyAccMag_std..[i] < -0.027582288) {
+      if (testing$tGravityAcc_arCoeff.._Y.1[i] >= -0.36062975) {
+        prediction[i] <- "walk"
+      } else {
+        prediction[i] <- "walkup"
+      }
+    } else {
+      prediction[i] <- "walkdown"
+    }
+  }
+  return(prediction)
+}
+
+# Predicting for the regression tree model
+regressiontreeprediction <- predictRegressionTree(samsungregtree, testing)
+```
+
+Compare the predictions for each activity and 
+
+  - compare them to the labeled activity in the testing data
+    - What is the error of each model?
+
+```{r}
+# Creating a function to compute the error
+# Prediction is the factor containing the predicted values
+# Truth is the actual values: testing$activity in this case
+calcModelError <- function(prediction, truth) {
+  # This divides the number of incorrect predictions by the total number of values to get the error rate and then ultiplies by 100 to convert to a percentage and rounds that to 2 dp
+error <- 100 * (length(which(prediction != truth)) / length(truth))
+  return(paste0(error, "%"))
+}
+
+# Computing the error for the support vector machine
+svmerror <- calcModelError(svmprediction, testing$activity)
+# Computing the error for the regression trees
+regressiontreeserror <-
+  calcModelError(regressiontreeprediction, testing$activity)
+# Computing the error for the random forests
+randomforesterror <-
+  calcModelError(randomforestprediction, testing$activity)
+# Printing the results
+sprintf("Error in SVM model: %s", svmerror)
+sprintf("Error in Random Forest model: %s", randomforesterror)
+sprintf("Error in Regression Trees model: %s", regressiontreeserror)
+```
+
+Which model do you think 
+
+  - does the best job of predicting the activity?
+  - explain your decision
+
+ANSWER: I think it is the support vector machine as it has the lowest error rate and has the most number of predictions correct.
+
+
+----------------------
+
+#### Links
+
+[1]: The package authors belonged to vienna university of technology [at that time]. 
+[Institut für Statistik und Wahrscheinlichkeitstheorie](https://tiss.tuwien.ac.at/adressbuch/adressbuch/orgeinheit/1620). Their statistic department has code :e107. And they were in the computational intelligence section of that department, called e1071. 
+
+http://www.r-project.org 
+
+http://rmarkdown.rstudio.com/  
+
+<!--
+# Keep a complete change log history at bottom of file.
+# Complete Change Log History
+# v0.00.00 - 1405-07 - Nick Wheeler made the blank script
+##########
+
